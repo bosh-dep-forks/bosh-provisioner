@@ -9,7 +9,7 @@ start running jobs as described by the deployment manifest.
 
 ### Usage
 
-1. `go get github.com/cppforlife/bosh-provisioner/main` to install `bosh-provisioner`
+1. `go get github.com/bosh-dep-forks/bosh-provisioner/main` to install `bosh-provisioner`
 
 2. `bosh-provisioner -configPath=./config.json` to run provisioner. Example `config.json`:
 

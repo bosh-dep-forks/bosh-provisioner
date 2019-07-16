@@ -91,6 +91,10 @@ func (d *dummyNatsJobSupervisor) Stop() error {
 	return nil
 }
 
+func (d *dummyNatsJobSupervisor) StopAndWait() error {
+	return d.Stop()
+}
+
 func (d *dummyNatsJobSupervisor) Unmonitor() error {
 	return nil
 }
@@ -156,4 +160,8 @@ func (d *dummyNatsJobSupervisor) statusHandler(req boshhandler.Request) boshhand
 	default:
 		return nil
 	}
+}
+
+func (d *dummyNatsJobSupervisor) HealthRecorder(status string) {
+
 }

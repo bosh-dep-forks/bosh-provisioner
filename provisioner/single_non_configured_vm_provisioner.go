@@ -4,8 +4,8 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 
-	bpeventlog "github.com/cppforlife/bosh-provisioner/eventlog"
-	bpvm "github.com/cppforlife/bosh-provisioner/vm"
+	bpeventlog "github.com/bosh-dep-forks/bosh-provisioner/eventlog"
+	bpvm "github.com/bosh-dep-forks/bosh-provisioner/vm"
 )
 
 // SingleNonConfiguredVMProvisioner configures 1 VM as a regular empty BOSH VM.

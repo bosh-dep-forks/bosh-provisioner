@@ -5,10 +5,11 @@ import (
 	"strings"
 	"time"
 
+	"code.cloudfoundry.org/clock"
+	"github.com/cloudfoundry/bosh-agent/agent/script/cmd"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
-	"github.com/pivotal-golang/clock"
 )
 
 type ConcreteScript struct {
@@ -33,7 +34,8 @@ func NewConcreteScript(
 	path string,
 	params ScriptParams,
 	timeService clock.Clock,
-	logger boshlog.Logger) ConcreteScript {
+	logger boshlog.Logger,
+) ConcreteScript {
 	return ConcreteScript{
 		fs:     fs,
 		runner: runner,
@@ -86,12 +88,7 @@ func (s ConcreteScript) runOnce(params ScriptParams) (int, error) {
 	hashChange := params.HashChange()
 	updatedPkgs := params.UpdatedPackages()
 
-	command := boshsys.Command{
-		Name: s.path,
-		Env: map[string]string{
-			"PATH": "/usr/sbin:/usr/bin:/sbin:/bin",
-		},
-	}
+	command := cmd.BuildCommand(s.path)
 
 	jobState, err := params.JobState()
 	if err != nil {

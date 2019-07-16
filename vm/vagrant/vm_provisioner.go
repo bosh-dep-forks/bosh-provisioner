@@ -4,8 +4,8 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 
-	bpdep "github.com/cppforlife/bosh-provisioner/deployment"
-	bpvm "github.com/cppforlife/bosh-provisioner/vm"
+	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
+	bpvm "github.com/bosh-dep-forks/bosh-provisioner/vm"
 )
 
 var (

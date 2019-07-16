@@ -6,8 +6,8 @@ import (
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 
-	bpdload "github.com/cppforlife/bosh-provisioner/downloader"
-	bptar "github.com/cppforlife/bosh-provisioner/tar"
+	bpdload "github.com/bosh-dep-forks/bosh-provisioner/downloader"
+	bptar "github.com/bosh-dep-forks/bosh-provisioner/tar"
 )
 
 const (

@@ -1,7 +1,7 @@
 package vagrant
 
 import (
-	bpagclient "github.com/cppforlife/bosh-provisioner/agent/client"
+	bpagclient "github.com/bosh-dep-forks/bosh-provisioner/agent/client"
 )
 
 // NonConfiguredVM represents provisioned Vagrant machine

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	boshas "github.com/cloudfoundry/bosh-agent/agent/applier/applyspec"
+	"github.com/cloudfoundry/bosh-agent/agent/script/cmd"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
@@ -40,12 +41,16 @@ func NewRunErrand(
 	}
 }
 
-func (a RunErrandAction) IsAsynchronous() bool {
+func (a RunErrandAction) IsAsynchronous(_ ProtocolVersion) bool {
 	return true
 }
 
 func (a RunErrandAction) IsPersistent() bool {
 	return false
+}
+
+func (a RunErrandAction) IsLoggable() bool {
+	return true
 }
 
 type ErrandResult struct {
@@ -54,22 +59,36 @@ type ErrandResult struct {
 	ExitStatus int    `json:"exit_code"`
 }
 
-func (a RunErrandAction) Run() (ErrandResult, error) {
+func (a RunErrandAction) Run(errandName ...string) (ErrandResult, error) {
 	currentSpec, err := a.specService.Get()
 	if err != nil {
 		return ErrandResult{}, bosherr.WrapError(err, "Getting current spec")
 	}
 
-	if len(currentSpec.JobSpec.Template) == 0 {
-		return ErrandResult{}, bosherr.Error("At least one job template is required to run an errand")
+	var templateName string
+
+	if len(errandName) == 0 {
+		if len(currentSpec.JobSpec.Template) == 0 {
+			return ErrandResult{}, bosherr.Error("At least one job template is required to run an errand")
+		}
+
+		templateName = currentSpec.JobSpec.Template
+	} else {
+		foundErrand := false
+		for _, v := range currentSpec.JobSpec.JobTemplateSpecs {
+			if v.Name == errandName[0] {
+				foundErrand = true
+			}
+		}
+
+		if !foundErrand {
+			return ErrandResult{}, bosherr.Errorf("Could not find errand %s", errandName[0])
+		}
+
+		templateName = errandName[0]
 	}
 
-	command := boshsys.Command{
-		Name: path.Join(a.jobsDir, currentSpec.JobSpec.Template, "bin", "run"),
-		Env: map[string]string{
-			"PATH": "/usr/sbin:/usr/bin:/sbin:/bin",
-		},
-	}
+	command := cmd.BuildCommand(path.Join(a.jobsDir, templateName, "bin", "run"))
 
 	process, err := a.cmdRunner.RunComplexCommandAsync(command)
 	if err != nil {

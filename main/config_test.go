@@ -5,8 +5,8 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	. "github.com/cppforlife/bosh-provisioner/main"
-	bpvm "github.com/cppforlife/bosh-provisioner/vm"
+	. "github.com/bosh-dep-forks/bosh-provisioner/main"
+	bpvm "github.com/bosh-dep-forks/bosh-provisioner/vm"
 )
 
 var _ = Describe("NewConfigFromPath", func() {

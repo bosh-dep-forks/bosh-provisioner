@@ -6,8 +6,8 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 
-	bpeventlog "github.com/cppforlife/bosh-provisioner/eventlog"
-	bpapplier "github.com/cppforlife/bosh-provisioner/instance/updater/applier"
+	bpeventlog "github.com/bosh-dep-forks/bosh-provisioner/eventlog"
+	bpapplier "github.com/bosh-dep-forks/bosh-provisioner/instance/updater/applier"
 )
 
 const updaterLogTag = "Updater"

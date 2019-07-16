@@ -10,10 +10,10 @@ import (
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 
-	bpagclient "github.com/cppforlife/bosh-provisioner/agent/client"
-	bpdep "github.com/cppforlife/bosh-provisioner/deployment"
-	bpeventlog "github.com/cppforlife/bosh-provisioner/eventlog"
-	bpvm "github.com/cppforlife/bosh-provisioner/vm"
+	bpagclient "github.com/bosh-dep-forks/bosh-provisioner/agent/client"
+	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
+	bpeventlog "github.com/bosh-dep-forks/bosh-provisioner/eventlog"
+	bpvm "github.com/bosh-dep-forks/bosh-provisioner/vm"
 )
 
 const (

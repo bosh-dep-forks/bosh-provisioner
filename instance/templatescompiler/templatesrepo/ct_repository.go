@@ -4,8 +4,8 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 
-	bpdep "github.com/cppforlife/bosh-provisioner/deployment"
-	bpindex "github.com/cppforlife/bosh-provisioner/index"
+	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
+	bpindex "github.com/bosh-dep-forks/bosh-provisioner/index"
 )
 
 type CTRepository struct {

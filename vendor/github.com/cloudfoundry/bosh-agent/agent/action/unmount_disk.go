@@ -23,7 +23,7 @@ func NewUnmountDisk(
 	return
 }
 
-func (a UnmountDiskAction) IsAsynchronous() bool {
+func (a UnmountDiskAction) IsAsynchronous(_ ProtocolVersion) bool {
 	return true
 }
 
@@ -31,12 +31,14 @@ func (a UnmountDiskAction) IsPersistent() bool {
 	return false
 }
 
-func (a UnmountDiskAction) Run(diskID string) (value interface{}, err error) {
-	settings := a.settingsService.GetSettings()
+func (a UnmountDiskAction) IsLoggable() bool {
+	return true
+}
 
-	diskSettings, found := settings.PersistentDiskSettings(diskID)
-	if !found {
-		err = bosherr.Errorf("Persistent disk with volume id '%s' could not be found", diskID)
+func (a UnmountDiskAction) Run(diskID string) (value interface{}, err error) {
+	diskSettings, err := a.settingsService.GetPersistentDiskSettings(diskID)
+	if err != nil {
+		err = bosherr.WrapError(err, "Getting persistent disk settings")
 		return
 	}
 

@@ -8,11 +8,12 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 
-	bpagentclient "github.com/cppforlife/bosh-provisioner/agent/client"
-	bpeventlog "github.com/cppforlife/bosh-provisioner/eventlog"
-	bpcpkgsrepo "github.com/cppforlife/bosh-provisioner/packagescompiler/compiledpackagesrepo"
-	bppkgsrepo "github.com/cppforlife/bosh-provisioner/packagescompiler/packagesrepo"
-	bprel "github.com/cppforlife/bosh-provisioner/release"
+	bpagentclient "github.com/bosh-dep-forks/bosh-provisioner/agent/client"
+	bpeventlog "github.com/bosh-dep-forks/bosh-provisioner/eventlog"
+	bpcpkgsrepo "github.com/bosh-dep-forks/bosh-provisioner/packagescompiler/compiledpackagesrepo"
+	bppkgsrepo "github.com/bosh-dep-forks/bosh-provisioner/packagescompiler/packagesrepo"
+	bprel "github.com/bosh-dep-forks/bosh-provisioner/release"
+	boshcrypto "github.com/cloudfoundry/bosh-utils/crypto"
 )
 
 const concretePackagesCompilerLogTag = "ConcretePackagesCompiler"
@@ -21,7 +22,7 @@ type ConcretePackagesCompiler struct {
 	agentClient          bpagentclient.Client
 	packagesRepo         bppkgsrepo.PackagesRepository
 	compiledPackagesRepo bpcpkgsrepo.CompiledPackagesRepository
-	blobstore            boshblob.Blobstore
+	blobstore            boshblob.DigestBlobstore
 
 	eventLog bpeventlog.Log
 	logger   boshlog.Logger
@@ -31,7 +32,7 @@ func NewConcretePackagesCompiler(
 	agentClient bpagentclient.Client,
 	packagesRepo bppkgsrepo.PackagesRepository,
 	compiledPackagesRepo bpcpkgsrepo.CompiledPackagesRepository,
-	blobstore boshblob.Blobstore,
+	blobstore boshblob.DigestBlobstore,
 	eventLog bpeventlog.Log,
 	logger boshlog.Logger,
 ) ConcretePackagesCompiler {
@@ -131,8 +132,8 @@ func (pc ConcretePackagesCompiler) compilePkg(pkg bprel.Package) error {
 	}
 
 	compiledPkgRes, err := pc.agentClient.CompilePackage(
-		pkgRec.BlobID, // source tar
-		pkgRec.SHA1,   // source tar
+		pkgRec.BlobID,        // source tar
+		pkgRec.SHA1.String(), // source tar
 		pkg.Name,
 		pkg.Version,
 		deps,
@@ -141,9 +142,13 @@ func (pc ConcretePackagesCompiler) compilePkg(pkg bprel.Package) error {
 		return bosherr.WrapErrorf(err, "Compiling package %s", pkg.Name)
 	}
 
+	digest := boshcrypto.MustNewMultipleDigest(
+		boshcrypto.NewDigest(boshcrypto.DigestAlgorithmSHA1, compiledPkgRes.SHA1),
+	)
+
 	compiledPkgRec := bpcpkgsrepo.CompiledPackageRecord{
 		BlobID: compiledPkgRes.BlobID,
-		SHA1:   compiledPkgRes.SHA1,
+		SHA1:   digest,
 	}
 
 	err = pc.compiledPackagesRepo.Save(pkg, compiledPkgRec)

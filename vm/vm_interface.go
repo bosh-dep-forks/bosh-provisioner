@@ -1,8 +1,8 @@
 package vm
 
 import (
-	bpagclient "github.com/cppforlife/bosh-provisioner/agent/client"
-	bpdep "github.com/cppforlife/bosh-provisioner/deployment"
+	bpagclient "github.com/bosh-dep-forks/bosh-provisioner/agent/client"
+	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
 )
 
 type Provisioner interface {

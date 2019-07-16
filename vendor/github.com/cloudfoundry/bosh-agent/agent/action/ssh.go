@@ -11,10 +11,6 @@ import (
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 )
 
-const (
-	sshActionLogTag = "SSH Action"
-)
-
 type SSHAction struct {
 	settingsService boshsettings.Service
 	platform        boshplatform.Platform
@@ -35,7 +31,7 @@ func NewSSH(
 	return
 }
 
-func (a SSHAction) IsAsynchronous() bool {
+func (a SSHAction) IsAsynchronous(_ ProtocolVersion) bool {
 	return false
 }
 
@@ -43,10 +39,13 @@ func (a SSHAction) IsPersistent() bool {
 	return false
 }
 
+func (a SSHAction) IsLoggable() bool {
+	return true
+}
+
 type SSHParams struct {
 	UserRegex string `json:"user_regex"`
 	User      string
-	Password  string
 	PublicKey string `json:"public_key"`
 }
 
@@ -73,17 +72,24 @@ func (a SSHAction) setupSSH(params SSHParams) (SSHResult, error) {
 
 	boshSSHPath := path.Join(a.dirProvider.BaseDir(), "bosh_ssh")
 
-	err := a.platform.CreateUser(params.User, params.Password, boshSSHPath)
+	// this must happen first so unfulfilled prerequistes on windows
+	// can stop the creation of new users
+	publicKey, err := a.platform.GetHostPublicKey()
+	if err != nil {
+		return result, bosherr.WrapError(err, "Getting host public key")
+	}
+
+	err = a.platform.CreateUser(params.User, boshSSHPath)
 	if err != nil {
 		return result, bosherr.WrapError(err, "Creating user")
 	}
 
-	err = a.platform.AddUserToGroups(params.User, []string{boshsettings.VCAPUsername, boshsettings.AdminGroup, boshsettings.SudoersGroup})
+	err = a.platform.AddUserToGroups(params.User, []string{boshsettings.VCAPUsername, boshsettings.AdminGroup, boshsettings.SudoersGroup, boshsettings.SshersGroup})
 	if err != nil {
 		return result, bosherr.WrapError(err, "Adding user to groups")
 	}
 
-	err = a.platform.SetupSSH(params.PublicKey, params.User)
+	err = a.platform.SetupSSH([]string{params.PublicKey}, params.User)
 	if err != nil {
 		return result, bosherr.WrapError(err, "Setting ssh public key")
 	}
@@ -93,11 +99,6 @@ func (a SSHAction) setupSSH(params SSHParams) (SSHResult, error) {
 	defaultIP, found := settings.Networks.DefaultIP()
 	if !found {
 		return result, errors.New("No default ip could be found")
-	}
-
-	publicKey, err := a.platform.GetHostPublicKey()
-	if err != nil {
-		return result, bosherr.WrapError(err, "Getting host public key")
 	}
 
 	result = SSHResult{

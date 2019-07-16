@@ -26,7 +26,11 @@ func NewListDisk(
 	return
 }
 
-func (a ListDiskAction) IsAsynchronous() bool {
+func (a ListDiskAction) IsAsynchronous(version ProtocolVersion) bool {
+	if version >= 3 {
+		return true
+	}
+
 	return false
 }
 
@@ -34,23 +38,35 @@ func (a ListDiskAction) IsPersistent() bool {
 	return false
 }
 
+func (a ListDiskAction) IsLoggable() bool {
+	return true
+}
+
 func (a ListDiskAction) Run() (interface{}, error) {
-	settings := a.settingsService.GetSettings()
-	diskIDs := []string{}
+	err := a.settingsService.LoadSettings()
+	if err != nil {
+		return nil, bosherr.WrapError(err, "Refreshing the settings")
+	}
 
-	for diskID := range settings.Disks.Persistent {
-		var isMounted bool
+	diskIDs := make([]string, 0)
+	usedIDs := map[string]bool{}
 
-		diskSettings, _ := settings.PersistentDiskSettings(diskID)
+	allPersistentDisks, err := a.settingsService.GetAllPersistentDiskSettings()
+	if err != nil {
+		return nil, bosherr.WrapError(err, "Getting persistent disk settings")
+	}
+
+	for diskID, diskSettings := range allPersistentDisks {
 		isMounted, err := a.platform.IsPersistentDiskMounted(diskSettings)
 		if err != nil {
 			return nil, bosherr.WrapErrorf(err, "Checking whether device %+v is mounted", diskSettings)
 		}
 
 		if isMounted {
-			diskIDs = append(diskIDs, diskID)
-		} else {
-			a.logger.Debug("list-disk-action", "Volume '%s' not mounted", diskID)
+			if _, present := usedIDs[diskID]; !present {
+				diskIDs = append(diskIDs, diskID)
+				usedIDs[diskID] = true
+			}
 		}
 	}
 

@@ -4,7 +4,6 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -49,16 +48,12 @@ func PrecompiledTestSuite(path string) (TestSuite, error) {
 func SuitesInDir(dir string, recurse bool) []TestSuite {
 	suites := []TestSuite{}
 
-	// "This change will only be enabled if the go command is run with
-	// GO15VENDOREXPERIMENT=1 in its environment."
-	// c.f. the vendor-experiment proposal https://goo.gl/2ucMeC
-	vendorExperiment := os.Getenv("GO15VENDOREXPERIMENT")
-	if (vendorExperiment == "1") && path.Base(dir) == "vendor" {
+	if vendorExperimentCheck(dir) {
 		return suites
 	}
 
 	files, _ := ioutil.ReadDir(dir)
-	re := regexp.MustCompile(`_test\.go$`)
+	re := regexp.MustCompile(`^[^._].*_test\.go$`)
 	for _, file := range files {
 		if !file.IsDir() && re.Match([]byte(file.Name())) {
 			suites = append(suites, New(dir, files))
@@ -82,7 +77,11 @@ func relPath(dir string) string {
 	dir, _ = filepath.Abs(dir)
 	cwd, _ := os.Getwd()
 	dir, _ = filepath.Rel(cwd, filepath.Clean(dir))
-	dir = "." + string(filepath.Separator) + dir
+
+	if string(dir[0]) != "." {
+		dir = "." + string(filepath.Separator) + dir
+	}
+
 	return dir
 }
 

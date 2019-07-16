@@ -21,6 +21,7 @@ type centosNetManager struct {
 	cmdRunner                     boshsys.CmdRunner
 	routesSearcher                RoutesSearcher
 	ipResolver                    boship.Resolver
+	macAddressDetector            MACAddressDetector
 	interfaceConfigurationCreator InterfaceConfigurationCreator
 	interfaceAddressesValidator   boship.InterfaceAddressesValidator
 	dnsValidator                  DNSValidator
@@ -32,6 +33,7 @@ func NewCentosNetManager(
 	fs boshsys.FileSystem,
 	cmdRunner boshsys.CmdRunner,
 	ipResolver boship.Resolver,
+	macAddressDetector MACAddressDetector,
 	interfaceConfigurationCreator InterfaceConfigurationCreator,
 	interfaceAddressesValidator boship.InterfaceAddressesValidator,
 	dnsValidator DNSValidator,
@@ -42,6 +44,7 @@ func NewCentosNetManager(
 		fs:                            fs,
 		cmdRunner:                     cmdRunner,
 		ipResolver:                    ipResolver,
+		macAddressDetector:            macAddressDetector,
 		interfaceConfigurationCreator: interfaceConfigurationCreator,
 		interfaceAddressesValidator:   interfaceAddressesValidator,
 		dnsValidator:                  dnsValidator,
@@ -49,6 +52,8 @@ func NewCentosNetManager(
 		logger:                        logger,
 	}
 }
+
+func (net centosNetManager) SetupIPv6(_ boshsettings.IPv6, _ <-chan struct{}) error { return nil }
 
 func (net centosNetManager) SetupNetworking(networks boshsettings.Networks, errCh chan error) error {
 	nonVipNetworks := boshsettings.Networks{}
@@ -104,7 +109,7 @@ func (net centosNetManager) SetupNetworking(networks boshsettings.Networks, errC
 func (net centosNetManager) GetConfiguredNetworkInterfaces() ([]string, error) {
 	interfaces := []string{}
 
-	interfacesByMacAddress, err := net.detectMacAddresses()
+	interfacesByMacAddress, err := net.macAddressDetector.DetectMacAddresses()
 	if err != nil {
 		return interfaces, bosherr.WrapError(err, "Getting network interfaces")
 	}
@@ -128,8 +133,8 @@ const centosStaticIfcfgTemplate = `DEVICE={{ .Name }}
 BOOTPROTO=static
 IPADDR={{ .Address }}
 NETMASK={{ .Netmask }}
-BROADCAST={{ .Broadcast }}
-GATEWAY={{ .Gateway }}
+BROADCAST={{ .Broadcast }}{{if .IsDefaultForGateway}}
+GATEWAY={{ .Gateway }}{{end}}
 ONBOOT=yes
 PEERDNS=no{{ range .DNSServers }}
 DNS{{ .Index }}={{ .Address }}{{ end }}
@@ -209,7 +214,7 @@ func (net centosNetManager) writeNetworkInterfaces(dhcpInterfaceConfigurations [
 }
 
 func (net centosNetManager) buildInterfaces(networks boshsettings.Networks) ([]StaticInterfaceConfiguration, []DHCPInterfaceConfiguration, error) {
-	interfacesByMacAddress, err := net.detectMacAddresses()
+	interfacesByMacAddress, err := net.macAddressDetector.DetectMacAddresses()
 	if err != nil {
 		return nil, nil, bosherr.WrapError(err, "Getting network interfaces")
 	}
@@ -284,34 +289,6 @@ func (net centosNetManager) writeDHCPConfiguration(dnsServers []string, dhcpInte
 	}
 
 	return changed, nil
-}
-
-func (net centosNetManager) detectMacAddresses() (map[string]string, error) {
-	addresses := map[string]string{}
-
-	filePaths, err := net.fs.Glob("/sys/class/net/*")
-	if err != nil {
-		return addresses, bosherr.WrapError(err, "Getting file list from /sys/class/net")
-	}
-
-	var macAddress string
-	for _, filePath := range filePaths {
-		isPhysicalDevice := net.fs.FileExists(path.Join(filePath, "device"))
-
-		if isPhysicalDevice {
-			macAddress, err = net.fs.ReadFileString(path.Join(filePath, "address"))
-			if err != nil {
-				return addresses, bosherr.WrapError(err, "Reading mac address from file")
-			}
-
-			macAddress = strings.Trim(macAddress, "\n")
-
-			interfaceName := path.Base(filePath)
-			addresses[macAddress] = interfaceName
-		}
-	}
-
-	return addresses, nil
 }
 
 func (net centosNetManager) ifaceAddresses(staticConfigs []StaticInterfaceConfiguration, dhcpConfigs []DHCPInterfaceConfiguration) ([]boship.InterfaceAddress, []boship.InterfaceAddress) {

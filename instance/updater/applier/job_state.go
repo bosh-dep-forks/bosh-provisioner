@@ -4,9 +4,10 @@ import (
 	boshas "github.com/cloudfoundry/bosh-agent/agent/applier/applyspec"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 
-	bpdep "github.com/cppforlife/bosh-provisioner/deployment"
-	bptplcomp "github.com/cppforlife/bosh-provisioner/instance/templatescompiler"
-	bppkgscomp "github.com/cppforlife/bosh-provisioner/packagescompiler"
+	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
+	bptplcomp "github.com/bosh-dep-forks/bosh-provisioner/instance/templatescompiler"
+	bppkgscomp "github.com/bosh-dep-forks/bosh-provisioner/packagescompiler"
+	boshcrypto "github.com/cloudfoundry/bosh-utils/crypto"
 )
 
 // JobState represents state for a VM
@@ -69,9 +70,6 @@ func (s JobState) buildJobTemplateSpecs() []boshas.JobTemplateSpec {
 		spec := boshas.JobTemplateSpec{
 			Name:    template.Name,
 			Version: "fake-job-template-version", // todo
-
-			Sha1:        "", // deprecated
-			BlobstoreID: "", // deprecated
 		}
 
 		specs = append(specs, spec)
@@ -108,20 +106,23 @@ func (s JobState) buildPackageSpecs() (map[string]boshas.PackageSpec, error) {
 	return specs, nil
 }
 
-func (s JobState) buildRenderedTemplatesArchive() (boshas.RenderedTemplatesArchiveSpec, error) {
+func (s JobState) buildRenderedTemplatesArchive() (*boshas.RenderedTemplatesArchiveSpec, error) {
 	var archive boshas.RenderedTemplatesArchiveSpec
 
 	rec, err := s.templatesCompiler.FindRenderedArchive(s.depJob, s.instance)
 	if err != nil {
-		return archive, bosherr.WrapErrorf(
+		return nil, bosherr.WrapErrorf(
 			err, "Finding rendered archive %s", s.depJob.Name)
 	}
 
+	digest := boshcrypto.MustNewMultipleDigest(
+		boshcrypto.NewDigest(boshcrypto.DigestAlgorithmSHA1, rec.SHA1),
+	)
 	// todo uppercase Sha1
-	archive.Sha1 = rec.SHA1
+	archive.Sha1 = &digest
 	archive.BlobstoreID = rec.BlobID
 
-	return archive, nil
+	return &archive, nil
 }
 
 /*

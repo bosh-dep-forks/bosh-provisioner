@@ -4,11 +4,17 @@ import (
 	"os"
 	"path/filepath"
 
-	boshdevutil "github.com/cloudfoundry/bosh-agent/platform/deviceutil"
+	"errors"
+
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 )
+
+type CDUtil interface {
+	GetFilesContents(fileNames []string) (contents [][]byte, err error)
+	GetBlockDeviceSize() (size uint64, err error)
+}
 
 type cdUtil struct {
 	settingsMountPath string
@@ -18,7 +24,7 @@ type cdUtil struct {
 	logTag            string
 }
 
-func NewCdUtil(settingsMountPath string, fs boshsys.FileSystem, cdrom Cdrom, logger boshlog.Logger) boshdevutil.DeviceUtil {
+func NewCdUtil(settingsMountPath string, fs boshsys.FileSystem, cdrom Cdrom, logger boshlog.Logger) CDUtil {
 	return cdUtil{
 		settingsMountPath: settingsMountPath,
 		fs:                fs,
@@ -71,4 +77,8 @@ func (util cdUtil) GetFilesContents(fileNames []string) ([][]byte, error) {
 	}
 
 	return contents, nil
+}
+
+func (util cdUtil) GetBlockDeviceSize() (size uint64, err error) {
+	return 0, errors.New("not supported")
 }

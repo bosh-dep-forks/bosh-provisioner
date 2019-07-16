@@ -50,12 +50,16 @@ func NewDrain(
 	}
 }
 
-func (a DrainAction) IsAsynchronous() bool {
+func (a DrainAction) IsAsynchronous(_ ProtocolVersion) bool {
 	return true
 }
 
 func (a DrainAction) IsPersistent() bool {
 	return false
+}
+
+func (a DrainAction) IsLoggable() bool {
+	return true
 }
 
 func (a DrainAction) Run(drainType DrainType, newSpecs ...boshas.V1ApplySpec) (int, error) {
@@ -75,6 +79,7 @@ func (a DrainAction) Run(drainType DrainType, newSpecs ...boshas.V1ApplySpec) (i
 	if err != nil {
 		return 0, bosherr.WrapError(err, "Unmonitoring services")
 	}
+	//TODO write health.json
 
 	var scripts []boshscript.Script
 

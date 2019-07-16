@@ -7,10 +7,10 @@ import (
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 
-	bpdep "github.com/cppforlife/bosh-provisioner/deployment"
-	bperb "github.com/cppforlife/bosh-provisioner/instance/templatescompiler/erbrenderer"
-	bpreljob "github.com/cppforlife/bosh-provisioner/release/job"
-	bptar "github.com/cppforlife/bosh-provisioner/tar"
+	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
+	bperb "github.com/bosh-dep-forks/bosh-provisioner/instance/templatescompiler/erbrenderer"
+	bpreljob "github.com/bosh-dep-forks/bosh-provisioner/release/job"
+	bptar "github.com/bosh-dep-forks/bosh-provisioner/tar"
 )
 
 type RenderedArchivesCompiler struct {

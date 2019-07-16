@@ -6,9 +6,9 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 
-	bpeventlog "github.com/cppforlife/bosh-provisioner/eventlog"
-	bpprov "github.com/cppforlife/bosh-provisioner/provisioner"
-	bpvm "github.com/cppforlife/bosh-provisioner/vm"
+	bpeventlog "github.com/bosh-dep-forks/bosh-provisioner/eventlog"
+	bpprov "github.com/bosh-dep-forks/bosh-provisioner/provisioner"
+	bpvm "github.com/bosh-dep-forks/bosh-provisioner/vm"
 )
 
 var (

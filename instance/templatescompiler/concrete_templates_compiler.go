@@ -7,11 +7,11 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 
-	bpdep "github.com/cppforlife/bosh-provisioner/deployment"
-	bpjobsrepo "github.com/cppforlife/bosh-provisioner/instance/templatescompiler/jobsrepo"
-	bptplsrepo "github.com/cppforlife/bosh-provisioner/instance/templatescompiler/templatesrepo"
-	bprel "github.com/cppforlife/bosh-provisioner/release"
-	bpreljob "github.com/cppforlife/bosh-provisioner/release/job"
+	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
+	bpjobsrepo "github.com/bosh-dep-forks/bosh-provisioner/instance/templatescompiler/jobsrepo"
+	bptplsrepo "github.com/bosh-dep-forks/bosh-provisioner/instance/templatescompiler/templatesrepo"
+	bprel "github.com/bosh-dep-forks/bosh-provisioner/release"
+	bpreljob "github.com/bosh-dep-forks/bosh-provisioner/release/job"
 )
 
 type ConcreteTemplatesCompiler struct {
@@ -23,7 +23,7 @@ type ConcreteTemplatesCompiler struct {
 	runPkgsRepo   bpjobsrepo.RuntimePackagesRepository
 	templatesRepo bptplsrepo.TemplatesRepository
 
-	blobstore boshblob.Blobstore
+	blobstore boshblob.DigestBlobstore
 	logger    boshlog.Logger
 }
 
@@ -34,7 +34,7 @@ func NewConcreteTemplatesCompiler(
 	tplToJobRepo bpjobsrepo.TemplateToJobRepository,
 	runPkgsRepo bpjobsrepo.RuntimePackagesRepository,
 	templatesRepo bptplsrepo.TemplatesRepository,
-	blobstore boshblob.Blobstore,
+	blobstore boshblob.DigestBlobstore,
 	logger boshlog.Logger,
 ) ConcreteTemplatesCompiler {
 	return ConcreteTemplatesCompiler{
@@ -78,7 +78,7 @@ func (tc ConcreteTemplatesCompiler) Precompile(release bprel.Release) error {
 
 			jobRec = bpjobsrepo.JobRecord{
 				BlobID: blobID,
-				SHA1:   fingerprint,
+				SHA1:   fingerprint.String(),
 			}
 
 			err = tc.jobsRepo.Save(job, jobRec)
@@ -200,7 +200,7 @@ func (tc ConcreteTemplatesCompiler) compileJob(job bpdep.Job, instance bpdep.Ins
 		return "", "", bosherr.WrapError(err, "Creating compiled templates")
 	}
 
-	return blobID, fingerprint, nil
+	return blobID, fingerprint.String(), nil
 }
 
 type jobReader struct {

@@ -4,9 +4,9 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 
-	bpagclient "github.com/cppforlife/bosh-provisioner/agent/client"
-	bpdep "github.com/cppforlife/bosh-provisioner/deployment"
-	bpinstupd "github.com/cppforlife/bosh-provisioner/instance/updater"
+	bpagclient "github.com/bosh-dep-forks/bosh-provisioner/agent/client"
+	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
+	bpinstupd "github.com/bosh-dep-forks/bosh-provisioner/instance/updater"
 )
 
 const provisionerLogTag = "Provisioner"

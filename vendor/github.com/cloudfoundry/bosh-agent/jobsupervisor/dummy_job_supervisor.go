@@ -24,6 +24,11 @@ func (s *dummyJobSupervisor) Stop() error {
 	return nil
 }
 
+func (s *dummyJobSupervisor) StopAndWait() error {
+	s.status = "stopped"
+	return nil
+}
+
 func (s *dummyJobSupervisor) Unmonitor() error {
 	return nil
 }
@@ -46,4 +51,7 @@ func (s *dummyJobSupervisor) RemoveAllJobs() error {
 
 func (s *dummyJobSupervisor) MonitorJobFailures(handler JobFailureHandler) error {
 	return nil
+}
+
+func (s *dummyJobSupervisor) HealthRecorder(status string) {
 }

@@ -1,12 +1,13 @@
 package compiledpackagesrepo
 
 import (
-	bprel "github.com/cppforlife/bosh-provisioner/release"
+	bprel "github.com/bosh-dep-forks/bosh-provisioner/release"
+	boshcrypto "github.com/cloudfoundry/bosh-utils/crypto"
 )
 
 type CompiledPackageRecord struct {
 	BlobID string
-	SHA1   string
+	SHA1   boshcrypto.MultipleDigest
 }
 
 // CompiledPackagesRepository maintains list of compiled packages as blobs

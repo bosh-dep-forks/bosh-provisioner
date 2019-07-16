@@ -4,7 +4,7 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 
-	bpagclient "github.com/cppforlife/bosh-provisioner/agent/client"
+	bpagclient "github.com/bosh-dep-forks/bosh-provisioner/agent/client"
 )
 
 const postStarterLogTag = "PostStarter"

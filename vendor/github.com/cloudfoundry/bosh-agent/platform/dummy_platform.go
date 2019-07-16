@@ -1,8 +1,11 @@
 package platform
 
 import (
+	"bytes"
 	"encoding/json"
-	"path"
+	"fmt"
+	"os"
+	"path/filepath"
 
 	boshdpresolv "github.com/cloudfoundry/bosh-agent/infrastructure/devicepathresolver"
 	boshcert "github.com/cloudfoundry/bosh-agent/platform/cert"
@@ -18,14 +21,22 @@ import (
 )
 
 type mount struct {
-	MountDir string
-	DiskCid  string
+	MountDir     string
+	MountOptions []string
+	DiskCid      string
+}
+
+type formattedDisk struct {
+	DiskCid string
 }
 
 type diskMigration struct {
 	FromDiskCid string
 	ToDiskCid   string
 }
+
+const CredentialFileName = "password"
+const EtcHostsFileName = "etc_hosts"
 
 type dummyPlatform struct {
 	collector          boshstats.Collector
@@ -38,6 +49,7 @@ type dummyPlatform struct {
 	devicePathResolver boshdpresolv.DevicePathResolver
 	logger             boshlog.Logger
 	certManager        boshcert.Manager
+	auditLogger        AuditLogger
 }
 
 func NewDummyPlatform(
@@ -47,22 +59,29 @@ func NewDummyPlatform(
 	dirProvider boshdirs.Provider,
 	devicePathResolver boshdpresolv.DevicePathResolver,
 	logger boshlog.Logger,
+	auditLogger AuditLogger,
 ) Platform {
 	return &dummyPlatform{
 		fs:                 fs,
 		cmdRunner:          cmdRunner,
 		collector:          collector,
 		compressor:         boshcmd.NewTarballCompressor(cmdRunner, fs),
-		copier:             boshcmd.NewCpCopier(cmdRunner, fs, logger),
+		copier:             boshcmd.NewGenericCpCopier(fs, logger),
 		dirProvider:        dirProvider,
 		devicePathResolver: devicePathResolver,
 		vitalsService:      boshvitals.NewService(collector, dirProvider),
 		certManager:        boshcert.NewDummyCertManager(fs, cmdRunner, 0, logger),
+		logger:             logger,
+		auditLogger:        auditLogger,
 	}
 }
 
 func (p dummyPlatform) GetFs() (fs boshsys.FileSystem) {
 	return p.fs
+}
+
+func (p dummyPlatform) GetAuditLogger() AuditLogger {
+	return p.auditLogger
 }
 
 func (p dummyPlatform) GetRunner() (runner boshsys.CmdRunner) {
@@ -93,7 +112,7 @@ func (p dummyPlatform) SetupRuntimeConfiguration() (err error) {
 	return
 }
 
-func (p dummyPlatform) CreateUser(username, password, basePath string) (err error) {
+func (p dummyPlatform) CreateUser(username, basePath string) (err error) {
 	return
 }
 
@@ -109,12 +128,46 @@ func (p dummyPlatform) SetupRootDisk(ephemeralDiskPath string) (err error) {
 	return
 }
 
-func (p dummyPlatform) SetupSSH(publicKey, username string) (err error) {
+func (p dummyPlatform) SetupSSH(publicKey []string, username string) (err error) {
 	return
 }
 
 func (p dummyPlatform) SetUserPassword(user, encryptedPwd string) (err error) {
-	return
+	credentialsPath := filepath.Join(p.dirProvider.BoshDir(), user, CredentialFileName)
+	return p.fs.WriteFileString(credentialsPath, encryptedPwd)
+}
+
+func (p dummyPlatform) SaveDNSRecords(dnsRecords boshsettings.DNSRecords, hostname string) (err error) {
+	etcHostsPath := filepath.Join(p.dirProvider.BoshDir(), EtcHostsFileName)
+
+	dnsRecordsContents := bytes.NewBuffer([]byte{})
+	for _, dnsRecord := range dnsRecords.Records {
+		dnsRecordsContents.WriteString(fmt.Sprintf("%s %s\n", dnsRecord[0], dnsRecord[1]))
+	}
+
+	return p.fs.WriteFileString(etcHostsPath, dnsRecordsContents.String())
+}
+
+func (p dummyPlatform) SetupBoshSettingsDisk() error {
+	return p.fs.MkdirAll(filepath.Dir(p.GetAgentSettingsPath(true)), 0700)
+}
+
+func (p dummyPlatform) GetAgentSettingsPath(tmpfs bool) string {
+	if tmpfs {
+		return filepath.Join(p.dirProvider.BoshSettingsDir(), "settings.json")
+	}
+	return filepath.Join(p.dirProvider.BoshDir(), "settings.json")
+}
+
+func (p dummyPlatform) GetPersistentDiskSettingsPath(tmpfs bool) string {
+	if tmpfs {
+		return filepath.Join(p.dirProvider.BoshSettingsDir(), "persistent_disk_hints.json")
+	}
+	return filepath.Join(p.dirProvider.BoshDir(), "persistent_disk_hints.json")
+}
+
+func (p dummyPlatform) SetupIPv6(config boshsettings.IPv6) error {
+	return nil
 }
 
 func (p dummyPlatform) SetupHostname(hostname string) (err error) {
@@ -141,7 +194,7 @@ func (p dummyPlatform) SetTimeWithNtpServers(servers []string) (err error) {
 	return
 }
 
-func (p dummyPlatform) SetupEphemeralDiskWithPath(devicePath string) (err error) {
+func (p dummyPlatform) SetupEphemeralDiskWithPath(devicePath string, desiredSwapSizeInBytes *uint64, labelPrefix string) (err error) {
 	return
 }
 
@@ -149,11 +202,57 @@ func (p dummyPlatform) SetupRawEphemeralDisks(devices []boshsettings.DiskSetting
 	return
 }
 
-func (p dummyPlatform) SetupDataDir() error {
+func (p dummyPlatform) SetupDataDir(_ boshsettings.JobDir) error {
+	dataDir := p.dirProvider.DataDir()
+
+	sysDataDir := filepath.Join(dataDir, "sys")
+
+	logDir := filepath.Join(sysDataDir, "log")
+	err := p.fs.MkdirAll(logDir, logDirPermissions)
+	if err != nil {
+		return bosherr.WrapErrorf(err, "Making %s dir", logDir)
+	}
+
+	sysDir := filepath.Join(filepath.Dir(dataDir), "sys")
+	err = p.fs.Symlink(sysDataDir, sysDir)
+	if err != nil {
+		return bosherr.WrapErrorf(err, "Symlinking '%s' to '%s'", sysDir, sysDataDir)
+	}
+
+	return nil
+}
+
+func (p dummyPlatform) SetupCanRestartDir() error {
 	return nil
 }
 
 func (p dummyPlatform) SetupTmpDir() error {
+	return nil
+}
+
+func (p dummyPlatform) SetupHomeDir() error {
+	return nil
+}
+
+func (p dummyPlatform) SetupLogDir() error {
+	return nil
+}
+
+func (p dummyPlatform) SetupSharedMemory() error {
+	return nil
+}
+
+func (p dummyPlatform) SetupBlobsDir() error {
+
+	blobsDir := p.dirProvider.BlobsDir()
+	if err := p.fs.MkdirAll(blobsDir, blobsDirPermissions); err != nil {
+		return bosherr.WrapErrorf(err, "Making %s dir", blobsDir)
+	}
+
+	return nil
+}
+
+func (p dummyPlatform) SetupLoggingAndAuditing() error {
 	return nil
 }
 
@@ -163,17 +262,73 @@ func (p dummyPlatform) MountPersistentDisk(diskSettings boshsettings.DiskSetting
 		return err
 	}
 
-	mounts = append(mounts, mount{MountDir: mountPoint, DiskCid: diskSettings.ID})
+	_, isMountPoint, err := p.IsMountPoint(mountPoint)
+	if err != nil {
+		return err
+	}
+
+	managedSettingsPath := filepath.Join(p.dirProvider.BoshDir(), "managed_disk_settings.json")
+
+	if isMountPoint {
+		currentManagedDisk, err := p.fs.ReadFileString(managedSettingsPath)
+		if err != nil {
+			return err
+		}
+
+		if diskSettings.ID == currentManagedDisk {
+			return nil
+		}
+
+		mountPoint = p.dirProvider.StoreMigrationDir()
+	}
+
+	newlyFormattedDisk := []formattedDisk{{DiskCid: diskSettings.ID}}
+	diskJSON, err := json.Marshal(newlyFormattedDisk)
+	if err != nil {
+		return err
+	}
+
+	p.fs.WriteFile(filepath.Join(p.dirProvider.BoshDir(), "formatted_disks.json"), diskJSON)
+
+	mounts = append(mounts, mount{
+		MountDir:     mountPoint,
+		MountOptions: diskSettings.MountOptions,
+		DiskCid:      diskSettings.ID,
+	})
 	mountsJSON, err := json.Marshal(mounts)
 	if err != nil {
 		return err
 	}
 
+	p.fs.WriteFileString(managedSettingsPath, diskSettings.ID)
+
 	return p.fs.WriteFile(p.mountsPath(), mountsJSON)
 }
 
 func (p dummyPlatform) UnmountPersistentDisk(diskSettings boshsettings.DiskSettings) (didUnmount bool, err error) {
-	return
+	mounts, err := p.existingMounts()
+	if err != nil {
+		return false, err
+	}
+
+	var updatedMounts []mount
+	for _, mount := range mounts {
+		if mount.DiskCid != diskSettings.ID {
+			updatedMounts = append(updatedMounts, mount)
+		}
+	}
+
+	updatedMountsJSON, err := json.Marshal(updatedMounts)
+	if err != nil {
+		return false, err
+	}
+
+	err = p.fs.WriteFile(p.mountsPath(), updatedMountsJSON)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
 func (p dummyPlatform) GetEphemeralDiskPath(diskSettings boshsettings.DiskSettings) string {
@@ -189,7 +344,7 @@ func (p dummyPlatform) GetFilesContentsFromDisk(diskPath string, fileNames []str
 }
 
 func (p dummyPlatform) MigratePersistentDisk(fromMountPoint, toMountPoint string) (err error) {
-	diskMigrationsPath := path.Join(p.dirProvider.BoshDir(), "disk_migrations.json")
+	diskMigrationsPath := filepath.Join(p.dirProvider.BoshDir(), "disk_migrations.json")
 	var diskMigrations []diskMigration
 	if p.fs.FileExists(diskMigrationsPath) {
 		bytes, err := p.fs.ReadFile(diskMigrationsPath)
@@ -219,23 +374,70 @@ func (p dummyPlatform) MigratePersistentDisk(fromMountPoint, toMountPoint string
 	return p.fs.WriteFile(diskMigrationsPath, diskMigrationsJSON)
 }
 
-func (p dummyPlatform) IsMountPoint(mountPointPath string) (result bool, err error) {
+func (p dummyPlatform) IsMountPoint(mountPointPath string) (partitionPath string, result bool, err error) {
 	mounts, err := p.existingMounts()
 	if err != nil {
-		return false, err
+		return "", false, err
 	}
 
 	for _, mount := range mounts {
 		if mount.MountDir == mountPointPath {
-			return true, nil
+			return "", true, nil
+		}
+	}
+
+	return "", false, nil
+}
+
+func (p dummyPlatform) IsPersistentDiskMounted(diskSettings boshsettings.DiskSettings) (bool, error) {
+	return true, nil
+}
+
+func (p dummyPlatform) IsPersistentDiskMountable(diskSettings boshsettings.DiskSettings) (bool, error) {
+	var formattedDisks []formattedDisk
+	formattedDisksPath := filepath.Join(p.dirProvider.BoshDir(), "formatted_disks.json")
+	if p.fs.FileExists(formattedDisksPath) {
+		bytes, err := p.fs.ReadFile(formattedDisksPath)
+		if err != nil {
+			return false, err
+		}
+		json.Unmarshal(bytes, &formattedDisks)
+
+		for _, disk := range formattedDisks {
+			if diskSettings.ID == disk.DiskCid {
+				return true, nil
+			}
 		}
 	}
 
 	return false, nil
 }
 
-func (p dummyPlatform) IsPersistentDiskMounted(diskSettings boshsettings.DiskSettings) (bool, error) {
-	return true, nil
+func (p dummyPlatform) AssociateDisk(name string, settings boshsettings.DiskSettings) error {
+	diskAssocsPath := filepath.Join(p.dirProvider.BoshDir(), "disk_associations.json")
+
+	diskNames := []string{}
+
+	bytes, err := p.fs.ReadFile(diskAssocsPath)
+	if err != nil {
+		err, ok := err.(bosherr.ComplexError)
+		if !ok {
+			return bosherr.WrapError(err, "Associating Disk: ")
+		} else if !os.IsNotExist(err.Cause) {
+			return bosherr.WrapError(err, "Associating Disk: ")
+		}
+	} else if err == nil {
+		json.Unmarshal(bytes, &diskNames)
+	}
+
+	diskNames = append(diskNames, name)
+
+	contents, err := json.Marshal(diskNames)
+	if err != nil {
+		return err
+	}
+
+	return p.fs.WriteFile(diskAssocsPath, contents)
 }
 
 func (p dummyPlatform) StartMonit() (err error) {
@@ -254,14 +456,14 @@ func (p dummyPlatform) PrepareForNetworkingChange() error {
 	return nil
 }
 
-func (p dummyPlatform) CleanIPMacAddressCache(ip string) error {
+func (p dummyPlatform) DeleteARPEntryWithIP(ip string) error {
 	return nil
 }
 
 func (p dummyPlatform) GetDefaultNetwork() (boshsettings.Network, error) {
 	var network boshsettings.Network
 
-	networkPath := path.Join(p.dirProvider.BoshDir(), "dummy-default-network-settings.json")
+	networkPath := filepath.Join(p.dirProvider.BoshDir(), "dummy-default-network-settings.json")
 	contents, err := p.fs.ReadFile(networkPath)
 	if err != nil {
 		return network, nil
@@ -279,6 +481,14 @@ func (p dummyPlatform) GetHostPublicKey() (string, error) {
 	return "dummy-public-key", nil
 }
 
+func (p dummyPlatform) RemoveDevTools(packageFileListPath string) error {
+	return nil
+}
+
+func (p dummyPlatform) RemoveStaticLibraries(packageFileListPath string) error {
+	return nil
+}
+
 func (p dummyPlatform) getDiskCidByMountPoint(mountPoint string, mounts []mount) string {
 	var diskCid string
 	for _, mount := range mounts {
@@ -290,7 +500,7 @@ func (p dummyPlatform) getDiskCidByMountPoint(mountPoint string, mounts []mount)
 }
 
 func (p dummyPlatform) mountsPath() string {
-	return path.Join(p.dirProvider.BoshDir(), "mounts.json")
+	return filepath.Join(p.dirProvider.BoshDir(), "mounts.json")
 }
 
 func (p dummyPlatform) existingMounts() ([]mount, error) {
@@ -307,4 +517,12 @@ func (p dummyPlatform) existingMounts() ([]mount, error) {
 	}
 	err = json.Unmarshal(bytes, &mounts)
 	return mounts, err
+}
+
+func (p dummyPlatform) SetupRecordsJSONPermission(path string) error {
+	return nil
+}
+
+func (p dummyPlatform) Shutdown() error {
+	return nil
 }

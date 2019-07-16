@@ -10,18 +10,19 @@ import (
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 	boshuuid "github.com/cloudfoundry/bosh-utils/uuid"
 
-	bpdep "github.com/cppforlife/bosh-provisioner/deployment"
-	bpdload "github.com/cppforlife/bosh-provisioner/downloader"
-	bpeventlog "github.com/cppforlife/bosh-provisioner/eventlog"
-	bpinstance "github.com/cppforlife/bosh-provisioner/instance"
-	bptplcomp "github.com/cppforlife/bosh-provisioner/instance/templatescompiler"
-	bpinstupd "github.com/cppforlife/bosh-provisioner/instance/updater"
-	bppkgscomp "github.com/cppforlife/bosh-provisioner/packagescompiler"
-	bpprov "github.com/cppforlife/bosh-provisioner/provisioner"
-	bprel "github.com/cppforlife/bosh-provisioner/release"
-	bpreljob "github.com/cppforlife/bosh-provisioner/release/job"
-	bptar "github.com/cppforlife/bosh-provisioner/tar"
-	bpvagrantvm "github.com/cppforlife/bosh-provisioner/vm/vagrant"
+	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
+	bpdload "github.com/bosh-dep-forks/bosh-provisioner/downloader"
+	bpeventlog "github.com/bosh-dep-forks/bosh-provisioner/eventlog"
+	bpinstance "github.com/bosh-dep-forks/bosh-provisioner/instance"
+	bptplcomp "github.com/bosh-dep-forks/bosh-provisioner/instance/templatescompiler"
+	bpinstupd "github.com/bosh-dep-forks/bosh-provisioner/instance/updater"
+	bppkgscomp "github.com/bosh-dep-forks/bosh-provisioner/packagescompiler"
+	bpprov "github.com/bosh-dep-forks/bosh-provisioner/provisioner"
+	bprel "github.com/bosh-dep-forks/bosh-provisioner/release"
+	bpreljob "github.com/bosh-dep-forks/bosh-provisioner/release/job"
+	bptar "github.com/bosh-dep-forks/bosh-provisioner/tar"
+	bpvagrantvm "github.com/bosh-dep-forks/bosh-provisioner/vm/vagrant"
+	boshcrypto "github.com/cloudfoundry/bosh-utils/crypto"
 )
 
 const mainLogTag = "main"
@@ -51,7 +52,11 @@ func main() {
 		config.Blobstore.Options,
 	)
 
-	blobstore := boshblob.NewSHA1VerifiableBlobstore(localBlobstore)
+	blobstore := boshblob.NewDigestVerifiableBlobstore(
+		localBlobstore,
+		fs,
+		[]boshcrypto.Algorithm{boshcrypto.DigestAlgorithmSHA1},
+	)
 
 	downloader := bpdload.NewDefaultMuxDownloader(fs, runner, blobstore, logger)
 
@@ -168,7 +173,7 @@ func main() {
 }
 
 func basicDeps() (boshlog.Logger, boshsys.FileSystem, boshsys.CmdRunner, boshuuid.Generator) {
-	logger := boshlog.NewWriterLogger(boshlog.LevelDebug, os.Stderr, os.Stderr)
+	logger := boshlog.NewWriterLogger(boshlog.LevelDebug, os.Stderr)
 
 	fs := boshsys.NewOsFileSystem(logger)
 

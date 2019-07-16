@@ -7,19 +7,19 @@ import (
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
 
-	bpdload "github.com/cppforlife/bosh-provisioner/downloader"
-	bpindex "github.com/cppforlife/bosh-provisioner/index"
-	bpjobsrepo "github.com/cppforlife/bosh-provisioner/instance/templatescompiler/jobsrepo"
-	bptplsrepo "github.com/cppforlife/bosh-provisioner/instance/templatescompiler/templatesrepo"
-	bpcpkgsrepo "github.com/cppforlife/bosh-provisioner/packagescompiler/compiledpackagesrepo"
-	bppkgsrepo "github.com/cppforlife/bosh-provisioner/packagescompiler/packagesrepo"
+	bpdload "github.com/bosh-dep-forks/bosh-provisioner/downloader"
+	bpindex "github.com/bosh-dep-forks/bosh-provisioner/index"
+	bpjobsrepo "github.com/bosh-dep-forks/bosh-provisioner/instance/templatescompiler/jobsrepo"
+	bptplsrepo "github.com/bosh-dep-forks/bosh-provisioner/instance/templatescompiler/templatesrepo"
+	bpcpkgsrepo "github.com/bosh-dep-forks/bosh-provisioner/packagescompiler/compiledpackagesrepo"
+	bppkgsrepo "github.com/bosh-dep-forks/bosh-provisioner/packagescompiler/packagesrepo"
 )
 
 type ReposFactory struct {
 	dirPath    string
 	fs         boshsys.FileSystem
 	downloader bpdload.Downloader
-	blobstore  boshblob.Blobstore
+	blobstore  boshblob.DigestBlobstore
 	logger     boshlog.Logger
 }
 
@@ -27,7 +27,7 @@ func NewReposFactory(
 	dirPath string,
 	fs boshsys.FileSystem,
 	downloader bpdload.Downloader,
-	blobstore boshblob.Blobstore,
+	blobstore boshblob.DigestBlobstore,
 	logger boshlog.Logger,
 ) ReposFactory {
 	return ReposFactory{

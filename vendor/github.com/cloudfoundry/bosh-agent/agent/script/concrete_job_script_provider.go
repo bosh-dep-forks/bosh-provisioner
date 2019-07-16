@@ -5,7 +5,7 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/pivotal-golang/clock"
+	"code.cloudfoundry.org/clock"
 
 	boshdrain "github.com/cloudfoundry/bosh-agent/agent/script/drain"
 	boshdir "github.com/cloudfoundry/bosh-agent/settings/directories"
@@ -37,8 +37,8 @@ func NewConcreteJobScriptProvider(
 	}
 }
 
-func (p ConcreteJobScriptProvider) NewScript(jobName string, scriptName string) Script {
-	path := path.Join(p.dirProvider.JobBinDir(jobName), scriptName)
+func (p ConcreteJobScriptProvider) NewScript(jobName string, scriptName string, scriptEnv map[string]string) Script {
+	path := path.Join(p.dirProvider.JobBinDir(jobName), scriptName+ScriptExt)
 
 	stdoutLogFilename := fmt.Sprintf("%s.stdout.log", scriptName)
 	stdoutLogPath := filepath.Join(p.dirProvider.LogsDir(), jobName, stdoutLogFilename)
@@ -46,11 +46,11 @@ func (p ConcreteJobScriptProvider) NewScript(jobName string, scriptName string) 
 	stderrLogFilename := fmt.Sprintf("%s.stderr.log", scriptName)
 	stderrLogPath := filepath.Join(p.dirProvider.LogsDir(), jobName, stderrLogFilename)
 
-	return NewScript(p.fs, p.cmdRunner, jobName, path, stdoutLogPath, stderrLogPath)
+	return NewScript(p.fs, p.cmdRunner, jobName, path, stdoutLogPath, stderrLogPath, scriptEnv)
 }
 
 func (p ConcreteJobScriptProvider) NewDrainScript(jobName string, params boshdrain.ScriptParams) CancellableScript {
-	path := path.Join(p.dirProvider.JobsDir(), jobName, "bin", "drain")
+	path := path.Join(p.dirProvider.JobsDir(), jobName, "bin", "drain"+ScriptExt)
 
 	return boshdrain.NewConcreteScript(p.fs, p.cmdRunner, jobName, path, params, p.timeService, p.logger)
 }

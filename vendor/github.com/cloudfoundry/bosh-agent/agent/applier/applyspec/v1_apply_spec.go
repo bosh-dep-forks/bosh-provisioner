@@ -3,7 +3,7 @@ package applyspec
 import (
 	"encoding/json"
 
-	models "github.com/cloudfoundry/bosh-agent/agent/applier/models"
+	"github.com/cloudfoundry/bosh-agent/agent/applier/models"
 )
 
 type V1ApplySpec struct {
@@ -14,16 +14,18 @@ type V1ApplySpec struct {
 	NetworkSpecs      map[string]NetworkSpec `json:"networks"`
 	ResourcePoolSpecs interface{}            `json:"resource_pool"`
 	Deployment        string                 `json:"deployment"`
+	Name              string                 `json:"name"`
 
 	// Since default value of int is 0 use pointer
 	// to indicate that state does not have an assigned index
 	// (json.Marshal will result in null instead of 0).
-	Index  *int   `json:"index"`
-	NodeID string `json:"id"`
+	Index            *int   `json:"index"`
+	NodeID           string `json:"id"`
+	AvailabilityZone string `json:"az"`
 
 	PersistentDisk int `json:"persistent_disk"`
 
-	RenderedTemplatesArchiveSpec RenderedTemplatesArchiveSpec `json:"rendered_templates_archive"`
+	RenderedTemplatesArchiveSpec *RenderedTemplatesArchiveSpec `json:"rendered_templates_archive"`
 }
 
 type PropertiesSpec struct {
@@ -53,11 +55,15 @@ type NetworkSpec struct {
 // extracted from a single tarball provided by BOSH director.
 func (s V1ApplySpec) Jobs() []models.Job {
 	jobsWithSource := []models.Job{}
-	for _, j := range s.JobSpec.JobTemplateSpecsAsJobs() {
-		j.Source = s.RenderedTemplatesArchiveSpec.AsSource(j)
-		j.Packages = s.Packages()
-		jobsWithSource = append(jobsWithSource, j)
+
+	if s.RenderedTemplatesArchiveSpec != nil {
+		for _, j := range s.JobSpec.JobTemplateSpecsAsJobs() {
+			j.Source = s.RenderedTemplatesArchiveSpec.AsSource(j)
+			j.Packages = s.Packages()
+			jobsWithSource = append(jobsWithSource, j)
+		}
 	}
+
 	return jobsWithSource
 }
 

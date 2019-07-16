@@ -1,11 +1,12 @@
 package packagescompiler
 
 import (
-	bprel "github.com/cppforlife/bosh-provisioner/release"
+	bprel "github.com/bosh-dep-forks/bosh-provisioner/release"
+	boshcrypto "github.com/cloudfoundry/bosh-utils/crypto"
 )
 
 type CompiledPackageRecord struct {
-	SHA1   string
+	SHA1   boshcrypto.MultipleDigest
 	BlobID string
 }
 

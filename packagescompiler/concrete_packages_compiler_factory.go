@@ -4,16 +4,16 @@ import (
 	boshblob "github.com/cloudfoundry/bosh-utils/blobstore"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 
-	bpagclient "github.com/cppforlife/bosh-provisioner/agent/client"
-	bpeventlog "github.com/cppforlife/bosh-provisioner/eventlog"
-	bpcpkgsrepo "github.com/cppforlife/bosh-provisioner/packagescompiler/compiledpackagesrepo"
-	bppkgsrepo "github.com/cppforlife/bosh-provisioner/packagescompiler/packagesrepo"
+	bpagclient "github.com/bosh-dep-forks/bosh-provisioner/agent/client"
+	bpeventlog "github.com/bosh-dep-forks/bosh-provisioner/eventlog"
+	bpcpkgsrepo "github.com/bosh-dep-forks/bosh-provisioner/packagescompiler/compiledpackagesrepo"
+	bppkgsrepo "github.com/bosh-dep-forks/bosh-provisioner/packagescompiler/packagesrepo"
 )
 
 type ConcretePackagesCompilerFactory struct {
 	packagesRepo         bppkgsrepo.PackagesRepository
 	compiledPackagesRepo bpcpkgsrepo.CompiledPackagesRepository
-	blobstore            boshblob.Blobstore
+	blobstore            boshblob.DigestBlobstore
 
 	eventLog bpeventlog.Log
 	logger   boshlog.Logger
@@ -22,7 +22,7 @@ type ConcretePackagesCompilerFactory struct {
 func NewConcretePackagesCompilerFactory(
 	packagesRepo bppkgsrepo.PackagesRepository,
 	compiledPackagesRepo bpcpkgsrepo.CompiledPackagesRepository,
-	blobstore boshblob.Blobstore,
+	blobstore boshblob.DigestBlobstore,
 	eventLog bpeventlog.Log,
 	logger boshlog.Logger,
 ) ConcretePackagesCompilerFactory {

@@ -1,8 +1,8 @@
 package templatescompiler
 
 import (
-	bpdep "github.com/cppforlife/bosh-provisioner/deployment"
-	bprel "github.com/cppforlife/bosh-provisioner/release"
+	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
+	bprel "github.com/bosh-dep-forks/bosh-provisioner/release"
 )
 
 type RenderedArchiveRecord struct {

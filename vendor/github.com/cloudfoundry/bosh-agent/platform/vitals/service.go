@@ -3,10 +3,14 @@ package vitals
 import (
 	"fmt"
 
+	"github.com/cloudfoundry/gosigar"
+
 	boshstats "github.com/cloudfoundry/bosh-agent/platform/stats"
 	boshdirs "github.com/cloudfoundry/bosh-agent/settings/directories"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
+
+//go:generate counterfeiter . Service
 
 type Service interface {
 	Get() (vitals Vitals, err error)
@@ -26,15 +30,16 @@ func NewService(statsCollector boshstats.Collector, dirProvider boshdirs.Provide
 
 func (s concreteService) Get() (vitals Vitals, err error) {
 	var (
-		loadStats boshstats.CPULoad
-		cpuStats  boshstats.CPUStats
-		memStats  boshstats.Usage
-		swapStats boshstats.Usage
-		diskStats DiskVitals
+		loadStats   boshstats.CPULoad
+		cpuStats    boshstats.CPUStats
+		memStats    boshstats.Usage
+		swapStats   boshstats.Usage
+		uptimeStats boshstats.UptimeStats
+		diskStats   DiskVitals
 	)
 
 	loadStats, err = s.statsCollector.GetCPULoad()
-	if err != nil {
+	if err != nil && err != sigar.ErrNotImplemented {
 		err = bosherr.WrapError(err, "Getting CPU Load")
 		return
 	}
@@ -63,27 +68,30 @@ func (s concreteService) Get() (vitals Vitals, err error) {
 		return
 	}
 
+	uptimeStats, err = s.statsCollector.GetUptimeStats()
+	if err != nil {
+		err = bosherr.WrapError(err, "Getting Uptime Stats")
+		return
+	}
+
 	vitals = Vitals{
-		Load: []string{
-			fmt.Sprintf("%.2f", loadStats.One),
-			fmt.Sprintf("%.2f", loadStats.Five),
-			fmt.Sprintf("%.2f", loadStats.Fifteen),
-		},
+		Load: createLoadVitals(loadStats),
 		CPU: CPUVitals{
 			User: cpuStats.UserPercent().FormatFractionOf100(1),
 			Sys:  cpuStats.SysPercent().FormatFractionOf100(1),
 			Wait: cpuStats.WaitPercent().FormatFractionOf100(1),
 		},
-		Mem:  createMemVitals(memStats),
-		Swap: createMemVitals(swapStats),
-		Disk: diskStats,
+		Mem:    createMemVitals(memStats),
+		Swap:   createMemVitals(swapStats),
+		Disk:   diskStats,
+		Uptime: UptimeVitals{Secs: uptimeStats.Secs},
 	}
 	return
 }
 
 func (s concreteService) getDiskStats() (diskStats DiskVitals, err error) {
 	disks := map[string]string{
-		"/": "system",
+		"/":                      "system",
 		s.dirProvider.DataDir():  "ephemeral",
 		s.dirProvider.StoreDir(): "persistent",
 	}

@@ -6,12 +6,12 @@ import (
 
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 
-	bpagclient "github.com/cppforlife/bosh-provisioner/agent/client"
-	bpdep "github.com/cppforlife/bosh-provisioner/deployment"
-	bpeventlog "github.com/cppforlife/bosh-provisioner/eventlog"
-	bptplcomp "github.com/cppforlife/bosh-provisioner/instance/templatescompiler"
-	bpapplier "github.com/cppforlife/bosh-provisioner/instance/updater/applier"
-	bppkgscomp "github.com/cppforlife/bosh-provisioner/packagescompiler"
+	bpagclient "github.com/bosh-dep-forks/bosh-provisioner/agent/client"
+	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
+	bpeventlog "github.com/bosh-dep-forks/bosh-provisioner/eventlog"
+	bptplcomp "github.com/bosh-dep-forks/bosh-provisioner/instance/templatescompiler"
+	bpapplier "github.com/bosh-dep-forks/bosh-provisioner/instance/updater/applier"
+	bppkgscomp "github.com/bosh-dep-forks/bosh-provisioner/packagescompiler"
 )
 
 type Factory struct {

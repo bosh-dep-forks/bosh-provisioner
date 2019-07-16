@@ -6,8 +6,8 @@ import (
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 
-	bpdep "github.com/cppforlife/bosh-provisioner/deployment"
-	bpreljob "github.com/cppforlife/bosh-provisioner/release/job"
+	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
+	bpreljob "github.com/bosh-dep-forks/bosh-provisioner/release/job"
 )
 
 type RenderProperties struct {

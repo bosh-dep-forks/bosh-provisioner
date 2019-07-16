@@ -1,12 +1,16 @@
 package fileutil
 
 type CompressorOptions struct {
-	SameOwner bool
+	SameOwner       bool
+	PathInArchive   string
+	StripComponents int
 }
 
 type Compressor interface {
 	// CompressFilesInDir returns path to a compressed file
 	CompressFilesInDir(dir string) (path string, err error)
+
+	CompressSpecificFilesInDir(dir string, files []string) (path string, err error)
 
 	DecompressFileToDir(path string, dir string, options CompressorOptions) (err error)
 

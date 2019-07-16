@@ -1,6 +1,7 @@
 package net
 
 import (
+	gonet "net"
 	"strings"
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
@@ -35,7 +36,15 @@ func (d *dnsValidator) Validate(dnsServers []string) error {
 		if strings.Contains(resolvConfContents, dnsServer) {
 			return nil
 		}
+
+		canonicalIP := gonet.ParseIP(dnsServer)
+
+		if canonicalIP != nil {
+			if strings.Contains(resolvConfContents, canonicalIP.String()) {
+				return nil
+			}
+		}
 	}
 
-	return bosherr.WrapError(err, "No specified dns servers found in /etc/resolv.conf")
+	return bosherr.WrapError(err, "None of the DNS servers that were specified in the manifest were found in /etc/resolv.conf.")
 }

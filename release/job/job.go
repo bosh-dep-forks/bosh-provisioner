@@ -1,8 +1,8 @@
 package job
 
 import (
-	bpdep "github.com/cppforlife/bosh-provisioner/deployment"
-	bpreljobman "github.com/cppforlife/bosh-provisioner/release/job/manifest"
+	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
+	bpreljobman "github.com/bosh-dep-forks/bosh-provisioner/release/job/manifest"
 )
 
 type Job struct {

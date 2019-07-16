@@ -4,12 +4,12 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 
-	bpdep "github.com/cppforlife/bosh-provisioner/deployment"
-	bpeventlog "github.com/cppforlife/bosh-provisioner/eventlog"
-	bptplcomp "github.com/cppforlife/bosh-provisioner/instance/templatescompiler"
-	bppkgscomp "github.com/cppforlife/bosh-provisioner/packagescompiler"
-	bprel "github.com/cppforlife/bosh-provisioner/release"
-	bpvm "github.com/cppforlife/bosh-provisioner/vm"
+	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
+	bpeventlog "github.com/bosh-dep-forks/bosh-provisioner/eventlog"
+	bptplcomp "github.com/bosh-dep-forks/bosh-provisioner/instance/templatescompiler"
+	bppkgscomp "github.com/bosh-dep-forks/bosh-provisioner/packagescompiler"
+	bprel "github.com/bosh-dep-forks/bosh-provisioner/release"
+	bpvm "github.com/bosh-dep-forks/bosh-provisioner/vm"
 )
 
 const releaseCompilerLogTag = "ReleaseCompiler"

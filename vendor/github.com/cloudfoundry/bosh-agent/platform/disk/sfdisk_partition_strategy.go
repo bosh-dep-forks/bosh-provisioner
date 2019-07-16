@@ -3,42 +3,38 @@ package disk
 import (
 	"time"
 
+	"code.cloudfoundry.org/clock"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshretry "github.com/cloudfoundry/bosh-utils/retrystrategy"
-	"github.com/pivotal-golang/clock"
 )
 
-type sfdiskPartitionStrategy struct {
+type partitionStrategy struct {
 	retryable   boshretry.Retryable
 	timeService clock.Clock
 	logger      boshlog.Logger
 }
 
-func NewSfdiskPartitionStrategy(
+func NewPartitionStrategy(
 	retryable boshretry.Retryable,
 	timeService clock.Clock,
 	logger boshlog.Logger,
 ) boshretry.RetryStrategy {
-	return &sfdiskPartitionStrategy{
+	return &partitionStrategy{
 		retryable:   retryable,
 		logger:      logger,
 		timeService: timeService,
 	}
 }
 
-func (s *sfdiskPartitionStrategy) Try() error {
+func (s *partitionStrategy) Try() error {
 	var err error
-	var isRetryable bool
+	var shouldRetry bool
 
 	for i := 0; i < 20; i++ {
 		s.logger.Debug("attemptRetryStrategy", "Making attempt #%d", i)
 
-		isRetryable, err = s.retryable.Attempt()
-		if err == nil {
-			return nil
-		}
-
-		if !isRetryable {
+		shouldRetry, err = s.retryable.Attempt()
+		if !shouldRetry {
 			return err
 		}
 

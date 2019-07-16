@@ -4,9 +4,9 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	bpdep "github.com/cppforlife/bosh-provisioner/deployment"
-	. "github.com/cppforlife/bosh-provisioner/instance/templatescompiler/erbrenderer"
-	bpreljob "github.com/cppforlife/bosh-provisioner/release/job"
+	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
+	. "github.com/bosh-dep-forks/bosh-provisioner/instance/templatescompiler/erbrenderer"
+	bpreljob "github.com/bosh-dep-forks/bosh-provisioner/release/job"
 )
 
 var _ = Describe("RenderProperties", func() {

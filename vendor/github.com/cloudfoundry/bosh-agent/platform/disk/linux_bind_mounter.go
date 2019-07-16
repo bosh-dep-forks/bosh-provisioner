@@ -9,8 +9,20 @@ func NewLinuxBindMounter(delegateMounter Mounter) Mounter {
 }
 
 func (m linuxBindMounter) Mount(partitionPath, mountPoint string, mountOptions ...string) error {
-	mountOptions = append(mountOptions, "--bind")
-	return m.delegateMounter.Mount(partitionPath, mountPoint, mountOptions...)
+	return m.MountFilesystem(partitionPath, mountPoint, "", mountOptions...)
+}
+
+func (m linuxBindMounter) MountTmpfs(mountPoint string, size string) error {
+	return m.delegateMounter.MountTmpfs(mountPoint, size)
+}
+
+func (m linuxBindMounter) MountFilesystem(partitionPath, mountPoint, fstype string, mountOptions ...string) error {
+	// Filesystems should not be bind mounted
+	if fstype != "tmpfs" {
+		mountOptions = append(mountOptions, "bind")
+	}
+
+	return m.delegateMounter.MountFilesystem(partitionPath, mountPoint, fstype, mountOptions...)
 }
 
 func (m linuxBindMounter) RemountAsReadonly(mountPoint string) error {
@@ -20,7 +32,7 @@ func (m linuxBindMounter) RemountAsReadonly(mountPoint string) error {
 }
 
 func (m linuxBindMounter) Remount(fromMountPoint, toMountPoint string, mountOptions ...string) error {
-	mountOptions = append(mountOptions, "--bind")
+	mountOptions = append(mountOptions, "bind")
 	return m.delegateMounter.Remount(fromMountPoint, toMountPoint, mountOptions...)
 }
 
@@ -32,10 +44,14 @@ func (m linuxBindMounter) Unmount(partitionOrMountPoint string) (bool, error) {
 	return m.delegateMounter.Unmount(partitionOrMountPoint)
 }
 
-func (m linuxBindMounter) IsMountPoint(path string) (bool, error) {
+func (m linuxBindMounter) IsMountPoint(path string) (string, bool, error) {
 	return m.delegateMounter.IsMountPoint(path)
 }
 
 func (m linuxBindMounter) IsMounted(partitionOrMountPoint string) (bool, error) {
 	return m.delegateMounter.IsMounted(partitionOrMountPoint)
+}
+
+func (m linuxBindMounter) RemountInPlace(mountPoint string, mountOptions ...string) (err error) {
+	return m.delegateMounter.RemountInPlace(mountPoint, mountOptions...)
 }
