@@ -2,10 +2,8 @@
 
 bin=$(dirname $0)
 
-$bin/go get golang.org/x/lint/golint
-
 errors=$(
-  $bin/env golint $bin/..                                   \
+  go run golang.org/x/lint/golint $bin/..                                   \
     | grep -v    '/vendor/'                                 \
     | grep -v -e 'should have comment.* or be unexported'   \
     | grep -v    'error strings should not be capitalized'

@@ -4,18 +4,16 @@ result=0
 
 bin=$(dirname $0)
 
-$bin/go install github.com/bosh-dep-forks/bosh-provisioner/vendor/github.com/onsi/ginkgo/ginkgo
-
 echo -e "\n Formatting packages..."
-$bin/go fmt $($bin/go list github.com/bosh-dep-forks/bosh-provisioner/... | grep -v /vendor/)
+go fmt $(go list github.com/bosh-dep-forks/bosh-provisioner/... | grep -v /vendor/)
 let "result+=$?"
 
 echo -e "\n Testing packages..."
-$bin/env ginkgo -r $bin/..
+go run github.com/onsi/ginkgo/ginkgo -r $bin/..
 let "result+=$?"
 
 echo -e "\n Vetting packages for potential issues..."
-$bin/go vet $($bin/go list github.com/bosh-dep-forks/bosh-provisioner/... | grep -v /vendor/)
+go vet $(go list github.com/bosh-dep-forks/bosh-provisioner/... | grep -v /vendor/)
 let "result+=$?"
 
 echo -e "\n Checking with golint..."
