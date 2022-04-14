@@ -26,7 +26,7 @@ properties:
 			Expect(manifest.Job.PropertyMappings).To(HaveLen(1))
 
 			for _, propDef := range manifest.Job.PropertyMappings {
-				// candiedyaml unmarshals manifest to map[interface{}]interface{}
+				// yaml unmarshals manifest to map[interface{}]interface{}
 				// (encoding/json unmarshals manifest to map[string]interface{})
 				Expect(propDef.Default).To(Equal(map[string]interface{}{
 					"prop": map[string]interface{}{

@@ -3,7 +3,6 @@ module github.com/bosh-dep-forks/bosh-provisioner
 go 1.16
 
 require (
-	github.com/cloudfoundry-incubator/candiedyaml v0.0.0-20170901234223-a41693b7b7af
 	github.com/cloudfoundry/bosh-agent v2.367.0+incompatible
 	github.com/cloudfoundry/bosh-utils v0.0.258
 	github.com/cloudfoundry/gosigar v1.2.0 // indirect

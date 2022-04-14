@@ -32,7 +32,7 @@ properties:
 
 			depProps := manifest.Deployment.Properties
 
-			// candiedyaml unmarshals manifest to map[interface{}]interface{}
+			// yaml unmarshals manifest to map[interface{}]interface{}
 			// (encoding/json unmarshals manifest to map[string]interface{})
 			Expect(depProps).To(Equal(Properties(
 				map[string]interface{}{
