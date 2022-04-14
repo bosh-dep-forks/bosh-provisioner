@@ -55,5 +55,15 @@ properties:
 				Expect(propDef.Default).To(Equal(""))
 			}
 		})
+
+		It("allows an empty properties definition", func() {
+			manifestBytes := []byte(`
+properties:`)
+
+			manifest, err := NewManifestFromBytes(manifestBytes)
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(manifest.Job.PropertyMappings).To(HaveLen(0))
+		})
 	})
 })

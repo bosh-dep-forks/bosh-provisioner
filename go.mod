@@ -15,4 +15,5 @@ require (
 	github.com/pivotal/go-smtpd v0.0.0-20140108210614-0af6982457e5 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
+	gopkg.in/yaml.v2 v2.4.0
 )
