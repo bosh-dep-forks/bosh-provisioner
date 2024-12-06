@@ -1,17 +1,21 @@
-# code.cloudfoundry.org/clock v1.0.0
-## explicit
+# code.cloudfoundry.org/clock v1.23.0
+## explicit; go 1.22.0
 code.cloudfoundry.org/clock
-# code.cloudfoundry.org/tlsconfig v0.0.0-20220621140725-0e6fbd869921
-## explicit; go 1.17
+# code.cloudfoundry.org/tlsconfig v0.11.0
+## explicit; go 1.22
 code.cloudfoundry.org/tlsconfig
+# github.com/BurntSushi/toml v1.4.1-0.20240526193622-a339e1f7089c
+## explicit; go 1.18
+github.com/BurntSushi/toml
+github.com/BurntSushi/toml/internal
 # github.com/bmatcuk/doublestar v1.3.4
 ## explicit; go 1.12
 github.com/bmatcuk/doublestar
-# github.com/charlievieth/fs v0.0.2
-## explicit; go 1.15
+# github.com/charlievieth/fs v0.0.3
+## explicit; go 1.18
 github.com/charlievieth/fs
-# github.com/cloudfoundry/bosh-agent v2.367.0+incompatible
-## explicit
+# github.com/cloudfoundry/bosh-agent v0.0.61-0.20241205231637-f0f09112ec0b
+## explicit; go 1.22.0
 github.com/cloudfoundry/bosh-agent/agent/action
 github.com/cloudfoundry/bosh-agent/agent/action/state
 github.com/cloudfoundry/bosh-agent/agent/alert
@@ -26,18 +30,19 @@ github.com/cloudfoundry/bosh-agent/agent/cmdrunner
 github.com/cloudfoundry/bosh-agent/agent/compiler
 github.com/cloudfoundry/bosh-agent/agent/httpblobprovider
 github.com/cloudfoundry/bosh-agent/agent/httpblobprovider/blobstore_delegator
+github.com/cloudfoundry/bosh-agent/agent/logstarprovider
 github.com/cloudfoundry/bosh-agent/agent/script
 github.com/cloudfoundry/bosh-agent/agent/script/cmd
 github.com/cloudfoundry/bosh-agent/agent/script/drain
 github.com/cloudfoundry/bosh-agent/agent/script/pathenv
 github.com/cloudfoundry/bosh-agent/agent/tarpath
 github.com/cloudfoundry/bosh-agent/agent/task
+github.com/cloudfoundry/bosh-agent/agent/utils
 github.com/cloudfoundry/bosh-agent/handler
 github.com/cloudfoundry/bosh-agent/infrastructure/devicepathresolver
 github.com/cloudfoundry/bosh-agent/ini
 github.com/cloudfoundry/bosh-agent/jobsupervisor
 github.com/cloudfoundry/bosh-agent/jobsupervisor/monit
-github.com/cloudfoundry/bosh-agent/jobsupervisor/monitor
 github.com/cloudfoundry/bosh-agent/jobsupervisor/winsvc
 github.com/cloudfoundry/bosh-agent/notification
 github.com/cloudfoundry/bosh-agent/platform
@@ -46,6 +51,7 @@ github.com/cloudfoundry/bosh-agent/platform/cert
 github.com/cloudfoundry/bosh-agent/platform/disk
 github.com/cloudfoundry/bosh-agent/platform/net
 github.com/cloudfoundry/bosh-agent/platform/net/arp
+github.com/cloudfoundry/bosh-agent/platform/net/dnsresolver
 github.com/cloudfoundry/bosh-agent/platform/net/ip
 github.com/cloudfoundry/bosh-agent/platform/openiscsi
 github.com/cloudfoundry/bosh-agent/platform/stats
@@ -53,10 +59,11 @@ github.com/cloudfoundry/bosh-agent/platform/udevdevice
 github.com/cloudfoundry/bosh-agent/platform/vitals
 github.com/cloudfoundry/bosh-agent/platform/windows/disk
 github.com/cloudfoundry/bosh-agent/platform/windows/powershell
+github.com/cloudfoundry/bosh-agent/servicemanager
 github.com/cloudfoundry/bosh-agent/settings
 github.com/cloudfoundry/bosh-agent/settings/directories
-# github.com/cloudfoundry/bosh-utils v0.0.322
-## explicit; go 1.18
+# github.com/cloudfoundry/bosh-utils v0.0.510
+## explicit; go 1.22.0
 github.com/cloudfoundry/bosh-utils/blobstore
 github.com/cloudfoundry/bosh-utils/crypto
 github.com/cloudfoundry/bosh-utils/errors
@@ -68,43 +75,74 @@ github.com/cloudfoundry/bosh-utils/system
 github.com/cloudfoundry/bosh-utils/system/fakes
 github.com/cloudfoundry/bosh-utils/uuid
 github.com/cloudfoundry/bosh-utils/work
-# github.com/cloudfoundry/go-socks5 v0.0.0-20180221174514-54f73bdb8a8e
-## explicit
+# github.com/cloudfoundry/go-socks5 v0.0.0-20240831012420-2590b55236ee
+## explicit; go 1.21.0
 github.com/cloudfoundry/go-socks5
-# github.com/cloudfoundry/gosigar v1.3.4
-## explicit; go 1.18
+# github.com/cloudfoundry/gosigar v1.3.78
+## explicit; go 1.22.0
 github.com/cloudfoundry/gosigar
 github.com/cloudfoundry/gosigar/sys/windows
-# github.com/cloudfoundry/socks5-proxy v0.2.64
-## explicit; go 1.18
+# github.com/cloudfoundry/socks5-proxy v0.2.133
+## explicit; go 1.22.0
 github.com/cloudfoundry/socks5-proxy
-# github.com/cloudfoundry/yagnats v0.0.0-20191003180638-5cab3e099974
+# github.com/containerd/cgroups v1.1.0
+## explicit; go 1.17
+github.com/containerd/cgroups
+github.com/containerd/cgroups/stats/v1
+# github.com/coreos/go-iptables v0.8.0
+## explicit; go 1.16
+github.com/coreos/go-iptables/iptables
+# github.com/coreos/go-systemd/v22 v22.5.0
 ## explicit; go 1.12
-# github.com/fsnotify/fsnotify v1.4.9
-## explicit; go 1.13
+github.com/coreos/go-systemd/v22/dbus
+# github.com/docker/go-units v0.5.0
+## explicit
+github.com/docker/go-units
+# github.com/fsnotify/fsnotify v1.8.0
+## explicit; go 1.17
 github.com/fsnotify/fsnotify
-# github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0
+github.com/fsnotify/fsnotify/internal
+# github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572
 ## explicit; go 1.13
 github.com/go-task/slim-sprig
-# github.com/google/uuid v1.2.0
-## explicit
+# github.com/godbus/dbus/v5 v5.1.0
+## explicit; go 1.12
+github.com/godbus/dbus/v5
+# github.com/gogo/protobuf v1.3.2
+## explicit; go 1.15
+github.com/gogo/protobuf/gogoproto
+github.com/gogo/protobuf/proto
+github.com/gogo/protobuf/protoc-gen-gogo/descriptor
+# github.com/google/go-cmp v0.6.0
+## explicit; go 1.13
+github.com/google/go-cmp/cmp
+github.com/google/go-cmp/cmp/internal/diff
+github.com/google/go-cmp/cmp/internal/flags
+github.com/google/go-cmp/cmp/internal/function
+github.com/google/go-cmp/cmp/internal/value
 # github.com/jpillora/backoff v1.0.0
 ## explicit; go 1.13
 github.com/jpillora/backoff
-# github.com/mitchellh/mapstructure v1.4.1
-## explicit; go 1.14
+# github.com/klauspost/compress v1.17.11
+## explicit; go 1.21
+github.com/klauspost/compress/flate
+# github.com/klauspost/pgzip v1.2.6
+## explicit
+github.com/klauspost/pgzip
+# github.com/kr/text v0.1.0
+## explicit
 # github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
 ## explicit
 github.com/nu7hatch/gouuid
-# github.com/nxadm/tail v1.4.8
+# github.com/nxadm/tail v1.4.11
 ## explicit; go 1.13
 github.com/nxadm/tail
 github.com/nxadm/tail/ratelimiter
 github.com/nxadm/tail/util
 github.com/nxadm/tail/watch
 github.com/nxadm/tail/winfile
-# github.com/onsi/ginkgo v1.16.1
-## explicit; go 1.15
+# github.com/onsi/ginkgo v1.16.5
+## explicit; go 1.16
 github.com/onsi/ginkgo
 github.com/onsi/ginkgo/config
 github.com/onsi/ginkgo/formatter
@@ -133,20 +171,22 @@ github.com/onsi/ginkgo/reporters/stenographer
 github.com/onsi/ginkgo/reporters/stenographer/support/go-colorable
 github.com/onsi/ginkgo/reporters/stenographer/support/go-isatty
 github.com/onsi/ginkgo/types
-# github.com/onsi/gomega v1.11.0
-## explicit; go 1.14
+# github.com/onsi/gomega v1.36.0
+## explicit; go 1.22
 github.com/onsi/gomega
 github.com/onsi/gomega/format
-github.com/onsi/gomega/internal/assertion
-github.com/onsi/gomega/internal/asyncassertion
-github.com/onsi/gomega/internal/oraclematcher
-github.com/onsi/gomega/internal/testingtsupport
+github.com/onsi/gomega/internal
+github.com/onsi/gomega/internal/gutil
 github.com/onsi/gomega/matchers
+github.com/onsi/gomega/matchers/internal/miter
 github.com/onsi/gomega/matchers/support/goraph/bipartitegraph
 github.com/onsi/gomega/matchers/support/goraph/edge
 github.com/onsi/gomega/matchers/support/goraph/node
 github.com/onsi/gomega/matchers/support/goraph/util
 github.com/onsi/gomega/types
+# github.com/opencontainers/runtime-spec v1.2.0
+## explicit
+github.com/opencontainers/runtime-spec/specs-go
 # github.com/pivotal-cf/paraphernalia v0.0.0-20180203224945-a64ae2051c20
 ## explicit
 github.com/pivotal-cf/paraphernalia/secure/tlsconfig
@@ -158,40 +198,49 @@ github.com/pivotal/go-smtpd/smtpd
 github.com/pkg/errors
 # github.com/rogpeppe/go-internal v1.8.1
 ## explicit; go 1.16
-# golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
-## explicit; go 1.17
+# go4.org/netipx v0.0.0-20231129151722-fdeea329fbba
+## explicit; go 1.18
+go4.org/netipx
+# golang.org/x/crypto v0.30.0
+## explicit; go 1.20
 golang.org/x/crypto/blowfish
 golang.org/x/crypto/chacha20
 golang.org/x/crypto/curve25519
-golang.org/x/crypto/curve25519/internal/field
-golang.org/x/crypto/ed25519
+golang.org/x/crypto/internal/alias
 golang.org/x/crypto/internal/poly1305
-golang.org/x/crypto/internal/subtle
 golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
+# golang.org/x/exp/typeparams v0.0.0-20241204233417-43b7b7cde48d
+## explicit; go 1.18
+golang.org/x/exp/typeparams
 # golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
 ## explicit; go 1.11
 golang.org/x/lint
 golang.org/x/lint/golint
-# golang.org/x/net v0.0.0-20220708220712-1185a9018129
-## explicit; go 1.17
+# golang.org/x/mod v0.22.0
+## explicit; go 1.22.0
+golang.org/x/mod/semver
+# golang.org/x/net v0.32.0
+## explicit; go 1.18
 golang.org/x/net/context
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy
-# golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8
-## explicit; go 1.17
+# golang.org/x/sync v0.10.0
+## explicit; go 1.18
+golang.org/x/sync/errgroup
+# golang.org/x/sys v0.28.0
+## explicit; go 1.18
 golang.org/x/sys/cpu
-golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 golang.org/x/sys/windows
 golang.org/x/sys/windows/registry
 golang.org/x/sys/windows/svc
 golang.org/x/sys/windows/svc/mgr
-# golang.org/x/text v0.3.7
-## explicit; go 1.17
+# golang.org/x/text v0.21.0
+## explicit; go 1.18
 golang.org/x/text/encoding
 golang.org/x/text/encoding/charmap
 golang.org/x/text/encoding/htmlindex
@@ -209,15 +258,244 @@ golang.org/x/text/internal/utf8internal
 golang.org/x/text/language
 golang.org/x/text/runes
 golang.org/x/text/transform
-# golang.org/x/tools v0.0.0-20201224043029-2b0845dc783e
-## explicit; go 1.12
+# golang.org/x/tools v0.28.0
+## explicit; go 1.22.0
+golang.org/x/tools/go/analysis
+golang.org/x/tools/go/analysis/passes/inspect
 golang.org/x/tools/go/ast/astutil
 golang.org/x/tools/go/ast/inspector
+golang.org/x/tools/go/buildutil
 golang.org/x/tools/go/gcexportdata
-golang.org/x/tools/go/internal/gcimporter
+golang.org/x/tools/go/internal/cgo
+golang.org/x/tools/go/loader
+golang.org/x/tools/go/packages
+golang.org/x/tools/go/types/objectpath
+golang.org/x/tools/go/types/typeutil
+golang.org/x/tools/internal/aliases
+golang.org/x/tools/internal/event
+golang.org/x/tools/internal/event/core
+golang.org/x/tools/internal/event/keys
+golang.org/x/tools/internal/event/label
+golang.org/x/tools/internal/gcimporter
+golang.org/x/tools/internal/gocommand
+golang.org/x/tools/internal/packagesinternal
+golang.org/x/tools/internal/pkgbits
+golang.org/x/tools/internal/stdlib
+golang.org/x/tools/internal/typeparams
+golang.org/x/tools/internal/typesinternal
+golang.org/x/tools/internal/versions
 # gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7
 ## explicit
 gopkg.in/tomb.v1
 # gopkg.in/yaml.v2 v2.4.0
 ## explicit; go 1.15
 gopkg.in/yaml.v2
+# gopkg.in/yaml.v3 v3.0.1
+## explicit
+gopkg.in/yaml.v3
+# honnef.co/go/tools v0.5.1
+## explicit; go 1.22.1
+honnef.co/go/tools/analysis/callcheck
+honnef.co/go/tools/analysis/code
+honnef.co/go/tools/analysis/edit
+honnef.co/go/tools/analysis/facts/deprecated
+honnef.co/go/tools/analysis/facts/directives
+honnef.co/go/tools/analysis/facts/generated
+honnef.co/go/tools/analysis/facts/nilness
+honnef.co/go/tools/analysis/facts/purity
+honnef.co/go/tools/analysis/facts/tokenfile
+honnef.co/go/tools/analysis/facts/typedness
+honnef.co/go/tools/analysis/lint
+honnef.co/go/tools/analysis/report
+honnef.co/go/tools/cmd/staticcheck
+honnef.co/go/tools/config
+honnef.co/go/tools/go/ast/astutil
+honnef.co/go/tools/go/buildid
+honnef.co/go/tools/go/ir
+honnef.co/go/tools/go/ir/irutil
+honnef.co/go/tools/go/loader
+honnef.co/go/tools/go/types/typeutil
+honnef.co/go/tools/internal/passes/buildir
+honnef.co/go/tools/internal/renameio
+honnef.co/go/tools/internal/robustio
+honnef.co/go/tools/internal/sharedcheck
+honnef.co/go/tools/internal/sync
+honnef.co/go/tools/knowledge
+honnef.co/go/tools/lintcmd
+honnef.co/go/tools/lintcmd/cache
+honnef.co/go/tools/lintcmd/runner
+honnef.co/go/tools/lintcmd/version
+honnef.co/go/tools/pattern
+honnef.co/go/tools/printf
+honnef.co/go/tools/quickfix
+honnef.co/go/tools/quickfix/qf1001
+honnef.co/go/tools/quickfix/qf1002
+honnef.co/go/tools/quickfix/qf1003
+honnef.co/go/tools/quickfix/qf1004
+honnef.co/go/tools/quickfix/qf1005
+honnef.co/go/tools/quickfix/qf1006
+honnef.co/go/tools/quickfix/qf1007
+honnef.co/go/tools/quickfix/qf1008
+honnef.co/go/tools/quickfix/qf1009
+honnef.co/go/tools/quickfix/qf1010
+honnef.co/go/tools/quickfix/qf1011
+honnef.co/go/tools/quickfix/qf1012
+honnef.co/go/tools/sarif
+honnef.co/go/tools/simple
+honnef.co/go/tools/simple/s1000
+honnef.co/go/tools/simple/s1001
+honnef.co/go/tools/simple/s1002
+honnef.co/go/tools/simple/s1003
+honnef.co/go/tools/simple/s1004
+honnef.co/go/tools/simple/s1005
+honnef.co/go/tools/simple/s1006
+honnef.co/go/tools/simple/s1007
+honnef.co/go/tools/simple/s1008
+honnef.co/go/tools/simple/s1009
+honnef.co/go/tools/simple/s1010
+honnef.co/go/tools/simple/s1011
+honnef.co/go/tools/simple/s1012
+honnef.co/go/tools/simple/s1016
+honnef.co/go/tools/simple/s1017
+honnef.co/go/tools/simple/s1018
+honnef.co/go/tools/simple/s1019
+honnef.co/go/tools/simple/s1020
+honnef.co/go/tools/simple/s1021
+honnef.co/go/tools/simple/s1023
+honnef.co/go/tools/simple/s1024
+honnef.co/go/tools/simple/s1025
+honnef.co/go/tools/simple/s1028
+honnef.co/go/tools/simple/s1029
+honnef.co/go/tools/simple/s1030
+honnef.co/go/tools/simple/s1031
+honnef.co/go/tools/simple/s1032
+honnef.co/go/tools/simple/s1033
+honnef.co/go/tools/simple/s1034
+honnef.co/go/tools/simple/s1035
+honnef.co/go/tools/simple/s1036
+honnef.co/go/tools/simple/s1037
+honnef.co/go/tools/simple/s1038
+honnef.co/go/tools/simple/s1039
+honnef.co/go/tools/simple/s1040
+honnef.co/go/tools/staticcheck
+honnef.co/go/tools/staticcheck/fakejson
+honnef.co/go/tools/staticcheck/fakereflect
+honnef.co/go/tools/staticcheck/fakexml
+honnef.co/go/tools/staticcheck/sa1000
+honnef.co/go/tools/staticcheck/sa1001
+honnef.co/go/tools/staticcheck/sa1002
+honnef.co/go/tools/staticcheck/sa1003
+honnef.co/go/tools/staticcheck/sa1004
+honnef.co/go/tools/staticcheck/sa1005
+honnef.co/go/tools/staticcheck/sa1006
+honnef.co/go/tools/staticcheck/sa1007
+honnef.co/go/tools/staticcheck/sa1008
+honnef.co/go/tools/staticcheck/sa1010
+honnef.co/go/tools/staticcheck/sa1011
+honnef.co/go/tools/staticcheck/sa1012
+honnef.co/go/tools/staticcheck/sa1013
+honnef.co/go/tools/staticcheck/sa1014
+honnef.co/go/tools/staticcheck/sa1015
+honnef.co/go/tools/staticcheck/sa1016
+honnef.co/go/tools/staticcheck/sa1017
+honnef.co/go/tools/staticcheck/sa1018
+honnef.co/go/tools/staticcheck/sa1019
+honnef.co/go/tools/staticcheck/sa1020
+honnef.co/go/tools/staticcheck/sa1021
+honnef.co/go/tools/staticcheck/sa1023
+honnef.co/go/tools/staticcheck/sa1024
+honnef.co/go/tools/staticcheck/sa1025
+honnef.co/go/tools/staticcheck/sa1026
+honnef.co/go/tools/staticcheck/sa1027
+honnef.co/go/tools/staticcheck/sa1028
+honnef.co/go/tools/staticcheck/sa1029
+honnef.co/go/tools/staticcheck/sa1030
+honnef.co/go/tools/staticcheck/sa1031
+honnef.co/go/tools/staticcheck/sa1032
+honnef.co/go/tools/staticcheck/sa2000
+honnef.co/go/tools/staticcheck/sa2001
+honnef.co/go/tools/staticcheck/sa2002
+honnef.co/go/tools/staticcheck/sa2003
+honnef.co/go/tools/staticcheck/sa3000
+honnef.co/go/tools/staticcheck/sa3001
+honnef.co/go/tools/staticcheck/sa4000
+honnef.co/go/tools/staticcheck/sa4001
+honnef.co/go/tools/staticcheck/sa4003
+honnef.co/go/tools/staticcheck/sa4004
+honnef.co/go/tools/staticcheck/sa4005
+honnef.co/go/tools/staticcheck/sa4006
+honnef.co/go/tools/staticcheck/sa4008
+honnef.co/go/tools/staticcheck/sa4009
+honnef.co/go/tools/staticcheck/sa4010
+honnef.co/go/tools/staticcheck/sa4011
+honnef.co/go/tools/staticcheck/sa4012
+honnef.co/go/tools/staticcheck/sa4013
+honnef.co/go/tools/staticcheck/sa4014
+honnef.co/go/tools/staticcheck/sa4015
+honnef.co/go/tools/staticcheck/sa4016
+honnef.co/go/tools/staticcheck/sa4017
+honnef.co/go/tools/staticcheck/sa4018
+honnef.co/go/tools/staticcheck/sa4019
+honnef.co/go/tools/staticcheck/sa4020
+honnef.co/go/tools/staticcheck/sa4021
+honnef.co/go/tools/staticcheck/sa4022
+honnef.co/go/tools/staticcheck/sa4023
+honnef.co/go/tools/staticcheck/sa4024
+honnef.co/go/tools/staticcheck/sa4025
+honnef.co/go/tools/staticcheck/sa4026
+honnef.co/go/tools/staticcheck/sa4027
+honnef.co/go/tools/staticcheck/sa4028
+honnef.co/go/tools/staticcheck/sa4029
+honnef.co/go/tools/staticcheck/sa4030
+honnef.co/go/tools/staticcheck/sa4031
+honnef.co/go/tools/staticcheck/sa4032
+honnef.co/go/tools/staticcheck/sa5000
+honnef.co/go/tools/staticcheck/sa5001
+honnef.co/go/tools/staticcheck/sa5002
+honnef.co/go/tools/staticcheck/sa5003
+honnef.co/go/tools/staticcheck/sa5004
+honnef.co/go/tools/staticcheck/sa5005
+honnef.co/go/tools/staticcheck/sa5007
+honnef.co/go/tools/staticcheck/sa5008
+honnef.co/go/tools/staticcheck/sa5009
+honnef.co/go/tools/staticcheck/sa5010
+honnef.co/go/tools/staticcheck/sa5011
+honnef.co/go/tools/staticcheck/sa5012
+honnef.co/go/tools/staticcheck/sa6000
+honnef.co/go/tools/staticcheck/sa6001
+honnef.co/go/tools/staticcheck/sa6002
+honnef.co/go/tools/staticcheck/sa6003
+honnef.co/go/tools/staticcheck/sa6005
+honnef.co/go/tools/staticcheck/sa6006
+honnef.co/go/tools/staticcheck/sa9001
+honnef.co/go/tools/staticcheck/sa9002
+honnef.co/go/tools/staticcheck/sa9003
+honnef.co/go/tools/staticcheck/sa9004
+honnef.co/go/tools/staticcheck/sa9005
+honnef.co/go/tools/staticcheck/sa9006
+honnef.co/go/tools/staticcheck/sa9007
+honnef.co/go/tools/staticcheck/sa9008
+honnef.co/go/tools/staticcheck/sa9009
+honnef.co/go/tools/stylecheck
+honnef.co/go/tools/stylecheck/st1000
+honnef.co/go/tools/stylecheck/st1001
+honnef.co/go/tools/stylecheck/st1003
+honnef.co/go/tools/stylecheck/st1005
+honnef.co/go/tools/stylecheck/st1006
+honnef.co/go/tools/stylecheck/st1008
+honnef.co/go/tools/stylecheck/st1011
+honnef.co/go/tools/stylecheck/st1012
+honnef.co/go/tools/stylecheck/st1013
+honnef.co/go/tools/stylecheck/st1015
+honnef.co/go/tools/stylecheck/st1016
+honnef.co/go/tools/stylecheck/st1017
+honnef.co/go/tools/stylecheck/st1018
+honnef.co/go/tools/stylecheck/st1019
+honnef.co/go/tools/stylecheck/st1020
+honnef.co/go/tools/stylecheck/st1021
+honnef.co/go/tools/stylecheck/st1022
+honnef.co/go/tools/stylecheck/st1023
+honnef.co/go/tools/unused
+# inet.af/wf v0.0.0-20221017222439-36129f591884
+## explicit; go 1.18
+inet.af/wf
