@@ -1,8 +1,6 @@
 module github.com/bosh-dep-forks/bosh-provisioner
 
-go 1.22.1
-
-toolchain go1.23.0
+go 1.22.0
 
 require (
 	github.com/cloudfoundry/bosh-agent v0.0.61-0.20241205231637-f0f09112ec0b
@@ -53,6 +51,6 @@ require (
 	golang.org/x/tools v0.28.0 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	honnef.co/go/tools v0.5.1 // indirect
+	honnef.co/go/tools v0.5.0-0.dev // indirect
 	inet.af/wf v0.0.0-20221017222439-36129f591884 // indirect
 )
