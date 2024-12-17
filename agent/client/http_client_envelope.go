@@ -3,7 +3,7 @@ package client
 import (
 	"encoding/json"
 
-	boshaction "github.com/cloudfoundry/bosh-agent/agent/action"
+	boshaction "github.com/cloudfoundry/bosh-agent/v2/agent/action"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 )
 

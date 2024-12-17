@@ -3,17 +3,18 @@ package packagescompiler
 import (
 	"fmt"
 
-	boshcomp "github.com/cloudfoundry/bosh-agent/agent/compiler"
+	boshcomp "github.com/cloudfoundry/bosh-agent/v2/agent/compiler"
 	boshblob "github.com/cloudfoundry/bosh-utils/blobstore"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
+
+	boshcrypto "github.com/cloudfoundry/bosh-utils/crypto"
 
 	bpagentclient "github.com/bosh-dep-forks/bosh-provisioner/agent/client"
 	bpeventlog "github.com/bosh-dep-forks/bosh-provisioner/eventlog"
 	bpcpkgsrepo "github.com/bosh-dep-forks/bosh-provisioner/packagescompiler/compiledpackagesrepo"
 	bppkgsrepo "github.com/bosh-dep-forks/bosh-provisioner/packagescompiler/packagesrepo"
 	bprel "github.com/bosh-dep-forks/bosh-provisioner/release"
-	boshcrypto "github.com/cloudfoundry/bosh-utils/crypto"
 )
 
 const concretePackagesCompilerLogTag = "ConcretePackagesCompiler"

@@ -1,13 +1,14 @@
 package applier
 
 import (
-	boshas "github.com/cloudfoundry/bosh-agent/agent/applier/applyspec"
+	boshas "github.com/cloudfoundry/bosh-agent/v2/agent/applier/applyspec"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+
+	boshcrypto "github.com/cloudfoundry/bosh-utils/crypto"
 
 	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
 	bptplcomp "github.com/bosh-dep-forks/bosh-provisioner/instance/templatescompiler"
 	bppkgscomp "github.com/bosh-dep-forks/bosh-provisioner/packagescompiler"
-	boshcrypto "github.com/cloudfoundry/bosh-utils/crypto"
 )
 
 // JobState represents state for a VM

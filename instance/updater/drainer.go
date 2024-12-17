@@ -4,8 +4,8 @@ import (
 	"math"
 	"time"
 
-	boshaction "github.com/cloudfoundry/bosh-agent/agent/action"
-	boshas "github.com/cloudfoundry/bosh-agent/agent/applier/applyspec"
+	boshaction "github.com/cloudfoundry/bosh-agent/v2/agent/action"
+	boshas "github.com/cloudfoundry/bosh-agent/v2/agent/applier/applyspec"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 

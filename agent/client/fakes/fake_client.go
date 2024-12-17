@@ -1,9 +1,9 @@
 package fakes
 
 import (
-	boshaction "github.com/cloudfoundry/bosh-agent/agent/action"
-	boshas "github.com/cloudfoundry/bosh-agent/agent/applier/applyspec"
-	boshcomp "github.com/cloudfoundry/bosh-agent/agent/compiler"
+	boshaction "github.com/cloudfoundry/bosh-agent/v2/agent/action"
+	boshas "github.com/cloudfoundry/bosh-agent/v2/agent/applier/applyspec"
+	boshcomp "github.com/cloudfoundry/bosh-agent/v2/agent/compiler"
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 
 	bpagclient "github.com/bosh-dep-forks/bosh-provisioner/agent/client"

@@ -1,7 +1,7 @@
 package applier
 
 import (
-	boshas "github.com/cloudfoundry/bosh-agent/agent/applier/applyspec"
+	boshas "github.com/cloudfoundry/bosh-agent/v2/agent/applier/applyspec"
 
 	bpdep "github.com/bosh-dep-forks/bosh-provisioner/deployment"
 )

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	boshaction "github.com/cloudfoundry/bosh-agent/agent/action"
+	boshaction "github.com/cloudfoundry/bosh-agent/v2/agent/action"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
